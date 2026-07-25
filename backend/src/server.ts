@@ -6,11 +6,13 @@ const app=express()
 const PORT=process.env.PORT||5178
 import authRoutes from './routes/auth.routes'
 import bookRouters from './routes/book.routes'
+import categoriesRoutes from './routes/categories.routes'
 
 app.use(express.json())
 app.use(cors())
 app.use('/api/auth',authRoutes)
 app.use('/api/books',bookRouters)
+app.use('/api/categoris',categoriesRoutes)
 
 //get запросы
 app.get('/',(req:Request,res:Response)=>{
