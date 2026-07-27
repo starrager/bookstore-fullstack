@@ -50,8 +50,8 @@ model Book {
 
 model Cart {
   id     Int @id @default(autoincrement())
-  userID Int @unique
-  user   User @relation(fields: [userID], references: [id])
+  userId Int @unique
+  user   User @relation(fields: [userId], references: [id])
 
   items  CartItem[]
 }
@@ -68,8 +68,8 @@ model CartItem {
 
 model Order {
   id         Int       @id @default(autoincrement())
-  userID     Int
-  user       User      @relation(fields: [userID], references: [id])
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
   total      Float
   status     String    @default("pending")
   address    String
@@ -95,23 +95,23 @@ model Review {
   id        Int      @id @default(autoincrement())
   rating    Int
   text      String?
-  userID    Int
+  userId    Int
   bookId    Int
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userID], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   book      Book     @relation(fields: [bookId], references: [id])
 
-  @@unique([userID, bookId])
+  @@unique([userId, bookId])
 }
 
 model Favorite {
   id     Int @id @default(autoincrement())
-  userID Int
+  userId Int
   bookId Int
 
-  user   User @relation(fields: [userID], references: [id])
+  user   User @relation(fields: [userId], references: [id])
   book   Book @relation(fields: [bookId], references: [id])
 
-  @@unique([userID, bookId])
+  @@unique([userId, bookId])
 }
