@@ -41,7 +41,7 @@ export const createReview=async(req:Request,res:Response)=>{
         res.status(201).json(review)
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка создания отзывав'})
+        res.status(500).json({error:'ошибка создания отзывав'})
     }
 }
 
@@ -71,7 +71,7 @@ export const getReviewByBook=async(req:Request,res:Response)=>{
         })
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка получпения отзыва'})
+        res.status(500).json({error:'ошибка получпения отзыва'})
     }
 }
 
@@ -99,7 +99,7 @@ export const updateReview=async(req:Request,res:Response)=>{
         res.json(updateReview)
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка обновления отзыва'})
+        res.status(500).json({error:'ошибка обновления отзыва'})
     }
 }
 
@@ -121,6 +121,6 @@ export const deleteReview=async(req:Request,res:Response)=>{
         res.json({message:'отзыв удален'})
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка удаления отзыва'})
+        res.status(500).json({error:'ошибка удаления отзыва'})
     }
 }

@@ -70,7 +70,7 @@ export const createOrder=async(req:Request,res:Response)=>{
         res.status(201).json(order)
     }catch(error){
         console.error(error)
-        res.status(500).json({error:'ошибка создания заказа'})
+        res.status(500).status(500).json({error:'ошибка создания заказа'})
     }
 }
 
@@ -93,7 +93,7 @@ export const getOrders=async(req:Request,res:Response)=>{
 
     }catch(error){
         console.error(error)
-        res.status(500).json({error:'ошибка получения заказов'})
+        res.status(500).status(500).json({error:'ошибка получения заказов'})
     }
 }
 
@@ -116,7 +116,7 @@ export const getOrderById=async(req:Request,res:Response)=>{
         res.json(order)
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка получения заказа'})
+        res.status(500).json({error:'ошибка получения заказа'})
     }
 }
 
@@ -143,7 +143,7 @@ export const updateOrderStatus=async(req:Request,res:Response)=>{
         res.json(order)
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка обновления статуса'})
+        res.status(500).json({error:'ошибка обновления статуса'})
     }
 }
 
@@ -184,6 +184,6 @@ export const cancelOrder=async(req:Request,res:Response)=>{
         res.json(updatedOrder)
     }catch(error){
         console.error(error)
-        res.json({error:'ошибка отмены заказа'})
+        res.status(500).json({error:'ошибка отмены заказа'})
     }
 }
