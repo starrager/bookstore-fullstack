@@ -109,6 +109,7 @@ model Favorite {
   id     Int @id @default(autoincrement())
   userId Int
   bookId Int
+  createdAt DateTime @default(now())
 
   user   User @relation(fields: [userId], references: [id])
   book   Book @relation(fields: [bookId], references: [id])

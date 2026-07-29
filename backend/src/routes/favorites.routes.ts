@@ -1,9 +1,12 @@
 import Router from 'express'
-import {} from '../controllers/favorites.controller'
+import {checkFavorite,getFavorites,removeFavorite,addFavorite} from '../controllers/favorites.controller'
 import { authMiddleWare } from '../middleware/auth.middleware'
 
 const router=Router()
 
-
+router.get('/',authMiddleWare,getFavorites)
+router.post('/',authMiddleWare,addFavorite)
+router.delete('/:bookId',addFavorite,removeFavorite)
+router.get('/check/:bookId',authMiddleWare,checkFavorite)
 
 export default router

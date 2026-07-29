@@ -10,6 +10,7 @@ import categoriesRoutes from './routes/categories.routes'
 import cartRoutes from './routes/cart.routes'
 import ordersRoutes from './routes/orders.routes'
 import reviewsRoutes from './routes/reviews.routes'
+import favoritesRoutes from './routes/favorites.routes'
 
 app.use(express.json())
 app.use(cors())
@@ -19,6 +20,7 @@ app.use('/api/categoris',categoriesRoutes)
 app.use('/api/cart',cartRoutes)
 app.use('/api/orders',ordersRoutes)
 app.use('/api/reviews',reviewsRoutes)
+app.use('/api/favorites',favoritesRoutes)
 
 //get запросы
 app.get('/',(req:Request,res:Response)=>{
