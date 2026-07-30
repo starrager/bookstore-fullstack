@@ -29,27 +29,75 @@ export const createBook=async(req:Request,res:Response)=>{
 
 export const getAllBooks=async(req:Request,res:Response)=>{
     try{
+        const {search,categoryId,minPrice,maxPrice,sort,page=1,limit=10}=req.query
+        const pageNumber=Number(page)
+        const limitNumber=Number(limit)
+        const skip=(pageNumber-1)*limitNumber
+        const filters:any={}
+
+        if(search){
+            filters.OR=[
+                {title:{contains:String(search)}},
+                {author:{contains:String(search)}}
+            ]
+        }
+
+        if(categoryId)filters.categoryId=Number(categoryId)
+        if(minPrice||maxPrice){
+            filters.price={}
+            if(minPrice)filters.price.gte=Number(minPrice)
+            if(maxPrice)filters.price.lte=Number(maxPrice)
+        }
+
+        let orderBy:any={createdAt:'desc'}
+        if(sort){
+            switch(sort){
+                case 'price_asc':
+                    orderBy={price:'asc'}
+                    break
+                case 'price_desc':
+                    orderBy={price:'desc'}
+                    break
+                case 'rating_desc':
+                    orderBy={createdAt:'desc'}
+                    break
+                case 'newest':
+                    orderBy={createdAt:'desc'}
+                    break
+                default:
+                    orderBy={createdAt:'desc'}
+            }
+        }
+
         const books=await prisma.book.findMany({
+            where:filters,
             include:{
                 category:true,
-                reviews:{
-                    select:{
-                        rating:true
-                    }
-                }
-            }
+                reviews:{select:{rating:true}}
+            },
+            orderBy:orderBy,
+            skip:skip,
+            take:limitNumber
         })
+
+        const totalBooks=await prisma.book.count({where:filters})
         const booksWithRating=books.map(book=>{
             const ratings=book.reviews.map(r=>r.rating)
-            const avgRating=ratings.length>0
-                ?ratings.reduce((a,b)=>a+b,0)/ratings.length
-                :null
+            const avgRating=ratings.length>0?ratings.reduce((a,b)=>a+b,0)/ratings.length:0
             return{
-                ...book,
-                avgRating
+                ...book,avgRating
             }
         })
-        res.json(booksWithRating)
+        
+        res.json({
+            books:booksWithRating,
+            pagination:{
+                total:totalBooks,
+                page:pageNumber,
+                limit:limitNumber,
+                pages:Math.ceil(totalBooks/limitNumber)
+            }
+        })
     }catch(error){
         console.error(error)
         res.status(500).json({error:'ошибка получания книг'})
