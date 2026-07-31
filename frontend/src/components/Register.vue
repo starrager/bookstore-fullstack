@@ -1,10 +1,11 @@
 <template>
     <div class="register">
-        <form action="" class="registerForm">
+        <form @submit.prevent="checkPassword" class="registerForm">
             <input type="text" class="name" v-model="name" placeholder="enter your nickname">
             <input type="email" class="email" v-model="email" placeholder="enter your email">
-            <input type="password" class="password" v-model="password" placeholder="enter password">
-            <button type="submit" class="submit" @click="register">Register</button>
+            <input type="password" class="password1" v-model="password1" placeholder="enter password">
+            <input type="password" class="password2" v-model="password2" placeholder="repeat password">
+            <button type="submit">Register</button>
         </form>
     </div>
 </template>
@@ -15,30 +16,34 @@ import axios from 'axios'
 
 const name=ref('')
 const email=ref('')
-const password=ref('')
+const password1=ref('')
+const password2=ref('')
+
+const checkPassword=async()=>{
+    try{
+        if(password1.value===password2.value)await register()
+        else throw(error)
+    }catch(error){
+        console.error(error)
+        alert('пароли не совпадают')
+    }
+}
 
 const register=async()=>{
     try{
-        const data={
-        name:name.value,
-        email:email.value,
-        password:password.value
-    }
+        const response=await axios.post('http://localhost:5178/api/auth/register',{
+            name:name.value,
+            email:email.value,
+            password:password1.value
+        })
+        console.log('✅ Успешно:', response.data)
+        alert('регистрация успешна')
 
-    axios.post('http://localhost:5178/api/auth/register',{
-        name:name.value,
-        email:email.value,
-        password:password.value
-    })
-    console.log('✅ Успех:', response.data)
-
-    name.value=''
-    email.value=''
-    password.value=''
-
+        name.value=''
+        email.value=''
+        password1.value=''
     }catch(error){
         console.error('ошибка: ',error.response?.data?.error||'чтото пошло не так')
-        console.error('❌ Ошибка:', error)
         alert('Ошибка регистрации')
     }
 }
