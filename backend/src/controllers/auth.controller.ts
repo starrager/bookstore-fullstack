@@ -40,7 +40,7 @@ export const register=async(req:Request,res:Response)=>{
         res.status(500).json({error:'ошибка сервера'})
     }
 }
-
+//comment
 export const login=async(req:Request,res:Response)=>{
     try{
         const {email,password}=req.body
