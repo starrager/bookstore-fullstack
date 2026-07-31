@@ -1,5 +1,5 @@
 <template>
-    <Register></Register>
+    <Login></Login>
 </template>
 
 <script setup>
