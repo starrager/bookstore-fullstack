@@ -47,7 +47,7 @@ export const createReview=async(req:Request,res:Response)=>{
 
 export const getReviewByBook=async(req:Request,res:Response)=>{
     try{
-        const bookId=req.params
+        const {bookId}=req.params
         const reviews=await prisma.review.findMany({
             where:{bookId:Number(bookId)},
             include:{
@@ -77,7 +77,7 @@ export const getReviewByBook=async(req:Request,res:Response)=>{
 
 export const updateReview=async(req:Request,res:Response)=>{
     try{
-        const userId=req.body
+        const {userId}=req.body
         const id=req.params
         const {rating,text}=req.body
 
@@ -105,7 +105,7 @@ export const updateReview=async(req:Request,res:Response)=>{
 
 export const deleteReview=async(req:Request,res:Response)=>{
     try{
-        const userId=req.body
+        const {userId}=req.body
         const {id}=req.params
 
         if(!userId)return res.status(401).json({error:'не авторизирован'})

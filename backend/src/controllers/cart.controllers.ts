@@ -90,7 +90,7 @@ export const updateCartItem=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
         const itemId=Number(req.params.id)
-        const quantity=req.body
+        const {quantity}=req.body
 
         if(!quantity||quantity<1)return res.status(400).json({errro:'неверное количество'})
 

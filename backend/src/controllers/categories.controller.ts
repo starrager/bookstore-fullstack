@@ -4,7 +4,7 @@ import { REPLCommand } from "node:repl";
 
 export const createCategory=async(req:Request,res:Response)=>{
     try{
-        const name=req.body
+        const {name}=req.body
         if(!name)return res.status(400).json({error:'название категории обязательно'})
 
         const existingCategory=await prisma.category.findUnique({where:{name}})
@@ -57,7 +57,7 @@ export const getCategoryById=async(req:Request,res:Response)=>{
 export const updateCategory=async(req:Request,res:Response)=>{
     try{
         const id=req.params
-        const name=req.body
+        const {name}=req.body
         if(!name)return res.status(400).json({error:'наазвание категории обязательно'})
 
         const existingCategory=await prisma.category.findUnique({where:{id:Number(id)}})

@@ -4,7 +4,7 @@ import prisma from '../prisma'
 export const addFavorite=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const bookId=req.body
+        const {bookId}=req.body
 
         if(!userId)return res.status(403).json({error:'не авторизирован'})
         if(!bookId)return res.status(400).json({error:'id книги обязателен'})
@@ -40,7 +40,7 @@ export const addFavorite=async(req:Request,res:Response)=>{
 export const removeFavorite=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const bookId=req.params
+        const {bookId}=req.params
 
         if(!userId)return res.status(403).json({error:'не авторизирован'})
 
@@ -95,7 +95,7 @@ export const getFavorites=async(req:Request,res:Response)=>{
 export const checkFavorite=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const bookId=req.body
+        const {bookId}=req.body
 
         if(!userId)return res.status(403).json({error:'не авторизирован'})
 

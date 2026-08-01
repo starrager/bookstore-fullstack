@@ -100,7 +100,7 @@ export const getOrders=async(req:Request,res:Response)=>{
 export const getOrderById=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const id=req.params
+        const {id}=req.params
         const order=await prisma.order.findUnique({
             where:{id:Number(id)},
             include:{items:{include:{book:true}}}
