@@ -1,9 +1,7 @@
 <template>
-    <Login></Login>
+    <router-view></router-view>
 </template>
 
 <script setup>
-import Register from './components/Register.vue';
-import Login from './components/Login.vue';
 
 </script>

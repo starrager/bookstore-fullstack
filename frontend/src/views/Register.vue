@@ -6,6 +6,7 @@
             <input type="password" class="password1" v-model="password1" placeholder="enter password">
             <input type="password" class="password2" v-model="password2" placeholder="repeat password">
             <button type="submit">Register</button>
+            <p>Есть аккаунт? <router-link to="/login">Войти</router-link></p>
         </form>
     </div>
 </template>
