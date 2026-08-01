@@ -12,7 +12,9 @@
 <script setup>
 import {ref} from 'vue'
 import axios from 'axios'
+import {useRouter} from 'vue-router'
 
+const router=useRouter()
 const email=ref('')
 const password=ref('')
 
@@ -23,6 +25,7 @@ const login=async()=>{
             password:password.value
         })
         alert('авторизация успешна')
+        router.push('/')
     }catch(error){
         console.error(error)
         alert('ошибка авторизации')

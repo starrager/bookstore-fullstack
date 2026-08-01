@@ -35,6 +35,7 @@ const importBooks=async()=>{
         let skippedCount=0
 
         for(const book of docs){
+            console.log(book.cover_i)
             const existing=await prisma.book.findFirst({
                 where:{title:book.title||''}
             })
@@ -64,7 +65,8 @@ const importBooks=async()=>{
                     price,
                     description:description.slice(0,500),
                     stock,
-                    categoryId:category.id
+                    categoryId:category.id,
+                    coverId:book.cover_i||null
                 }
             })
 
