@@ -17,8 +17,8 @@
                 <p><strong class="category">Category: </strong>{{ book.category?.name||'No category' }}</p>
 
                 <div class="actions">
-                    <button @click="addToCart(bookId)">In Cart</button>
-                    <button @click="addToFavorites(bookId)">If Favorite</button>
+                    <button @click="addToCart(book.id)">In Cart</button>
+                    <button @click="addToFavorites(book.id)">If Favorite</button>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@ const prevPage=async()=>{
     }
 }
 
-const addToCart=async()=>{
+const addToCart=async(bookId)=>{
     try{
         const token=localStorage.getItem('token')
         if(!token){
@@ -84,13 +84,14 @@ const addToCart=async()=>{
     }
 }
 
-const addToFavorites=async()=>{
+const addToFavorites=async(bookId)=>{
     try{
         const token=localStorage.getItem('token')
         if(!token){
             alert('Войдите в аккаунт')
             return
         }
+        alert(`Книга ${bookId} добавлена в избранное`)
     }catch(error){
         console.error(error)
         alert('ошибка добавления в избранное')

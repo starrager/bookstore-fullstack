@@ -26,6 +26,9 @@ const login=async()=>{
         })
         alert('авторизация успешна')
         router.push('/')
+
+        localStorage.setItem('token',response.data.token)
+        localStorage.setItem('user',JSON.stringify(response.data.user))
     }catch(error){
         console.error(error)
         alert('ошибка авторизации')
