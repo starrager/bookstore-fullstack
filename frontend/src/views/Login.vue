@@ -1,7 +1,7 @@
 <template>
     <div class="login">
         <form @submit.prevent="login" class="loginForm" novalidate>
-            <input type="email" class="email" placeholder="enter email" v-model="email">
+            <input type="text" class="email" placeholder="enter email" v-model="email">
             <input type="passowrd" class="password" placeholder="enter password" v-model="password">
             <button type="submit" class="login" formnovalidate>Login</button>
             <p>Нет аккаунта? <router-link to="/register">Зарегистрироваться</router-link></p>

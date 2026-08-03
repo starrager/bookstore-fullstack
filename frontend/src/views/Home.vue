@@ -9,7 +9,7 @@
         <div v-else-if="books.length===0" class="empty">no books found</div>
         <div v-else class="books">
             <div v-for="book in books":key="book.id" class="book">
-                <img v-if="book.coverId" :src="`https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`" alt="cover" class="cover">
+                <img v-if="book.coverId" :src="`https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`" alt="cover" class="cover" @error="(e)=>handleImageError(e,book)">
                 <h3><strong class="title">Title: </strong>{{ book.title }}</h3>
                 <p><strong class="author">Author: </strong>{{ book.author }}</p>
                 <p><strong class="price">Price: </strong>{{ book.price }}</p>
@@ -41,6 +41,15 @@ const search=ref('')
 const books=ref([])
 const loading=ref(false)
 const pagination=ref({page:1,total:0,pages:1,limit:10})
+
+const handleImageError=(event,book)=>{
+    const img=event.target
+    const originalSrc=img.src
+    
+    if(originalSrc.includes('-L.jpg'))img.src=originalSrc.replace('-L.jpg','-M.jpg')
+    else if(originalSrc.includes('-M.jpg'))img.src=originalSrc.replace('-M.jpg','-S.jpg')
+    else img.style.display = 'none'
+}
 
 const fetchBooks=async()=>{
     loading.value=true
@@ -218,5 +227,4 @@ onMounted(fetchBooks)
     border-radius:4px;
     margin-bottom:12px;
 }
-
 </style>

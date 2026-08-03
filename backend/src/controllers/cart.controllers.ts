@@ -32,9 +32,6 @@ export const getCart=async(req:Request,res:Response)=>{
 }
 
 export const addToCart=async(req:Request,res:Response)=>{
-    console.log('📦 addToCart вызван')
-    console.log('📦 req.body:', req.body)   // 👈 ДОБАВЬ
-    console.log('📦 req.headers:', req.headers) 
     try{
         const userId=req.userId
         const {bookId,quantity}=req.body

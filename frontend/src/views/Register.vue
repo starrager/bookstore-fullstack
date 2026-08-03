@@ -2,7 +2,7 @@
     <div class="register">
         <form @submit.prevent="checkPassword" class="registerForm">
             <input type="text" class="name" v-model="name" placeholder="enter your nickname">
-            <input type="email" class="email" v-model="email" placeholder="enter your email">
+            <input type="text" class="email" v-model="email" placeholder="enter your email">
             <input type="password" class="password1" v-model="password1" placeholder="enter password">
             <input type="password" class="password2" v-model="password2" placeholder="repeat password">
             <button type="submit">Register</button>
@@ -14,7 +14,9 @@
 <script setup>
 import {ref} from 'vue'
 import axios from 'axios'
+import {useRouter} from 'vue-router'
 
+const router=useRouter()
 const name=ref('')
 const email=ref('')
 const password1=ref('')
@@ -37,12 +39,14 @@ const register=async()=>{
             email:email.value,
             password:password1.value
         })
-        console.log('✅ Успешно:', response.data)
+        console.log('успешно ', response.data)
         alert('регистрация успешна')
 
         name.value=''
         email.value=''
         password1.value=''
+        router.push('/')
+
     }catch(error){
         console.error('ошибка: ',error.response?.data?.error||'чтото пошло не так')
         alert('Ошибка регистрации')

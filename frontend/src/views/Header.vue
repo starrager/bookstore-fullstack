@@ -1,6 +1,7 @@
 <template>
     <div>
         <button @click="logout">Выйти</button>
+        <button @click="router.push('/cart')">In Cart</button>
     </div>
 </template>
 
