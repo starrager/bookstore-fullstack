@@ -12,8 +12,8 @@ import ordersRoutes from './routes/orders.routes'
 import reviewsRoutes from './routes/reviews.routes'
 import favoritesRoutes from './routes/favorites.routes'
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 app.use('/api/auth',authRoutes)
 app.use('/api/books',bookRouters)
 app.use('/api/categories',categoriesRoutes)

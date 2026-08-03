@@ -34,7 +34,9 @@
 <script setup>
 import {ref,onMounted} from 'vue'
 import api from '../api/api'
+import { useCartStore } from '@/stores/cart'
 
+const cartStore=useCartStore()
 const search=ref('')
 const books=ref([])
 const loading=ref(false)
@@ -77,6 +79,7 @@ const addToCart=async(bookId)=>{
             alert('Войдите в аккаунт')
             return
         }
+        await cartStore.addToCart(bookId,1)
         alert(`Книга ${bookId} добавлена в корзину`)
     }catch(error){
         console.error(error)

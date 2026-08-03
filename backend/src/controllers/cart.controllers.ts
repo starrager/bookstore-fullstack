@@ -32,6 +32,9 @@ export const getCart=async(req:Request,res:Response)=>{
 }
 
 export const addToCart=async(req:Request,res:Response)=>{
+    console.log('📦 addToCart вызван')
+    console.log('📦 req.body:', req.body)   // 👈 ДОБАВЬ
+    console.log('📦 req.headers:', req.headers) 
     try{
         const userId=req.userId
         const {bookId,quantity}=req.body
@@ -148,7 +151,7 @@ export const removeFromCart=async(req:Request,res:Response)=>{
 export const clearCart=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const cart=await prisma.cart.findUnique({where:{id:userId!}})
+        const cart=await prisma.cart.findUnique({where:{userId:userId!}})
 
         if(!cart)return res.status(404).json({error:'корзина не найдена'})
 

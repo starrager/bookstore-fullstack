@@ -56,7 +56,7 @@ export const login=async(req:Request,res:Response)=>{
         if(!isPasswordValid)return res.status(400).json({error:'неверный  или email'})
 
         const token=jwt.sign(
-            {userID:user.id,email:user.email},
+            {userId:user.id,email:user.email},
             process.env.JWT_SECRET||'secret_key',
             {expiresIn:'7d'}
         )
