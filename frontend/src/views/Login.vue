@@ -37,5 +37,41 @@ const login=async()=>{
 </script>
 
 <style scoped>
-
+.login{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.loginForm{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:300px;
+    padding:20px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#f9f9f9;
+}
+.loginForm input{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:16px;
+}
+.loginForm button{
+    padding:10px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:16px;
+}
+.loginForm button:hover{
+    background:#45a049;
+}
+.loginForm p{
+    text-align:center;
+    margin:0;
+}
 </style>

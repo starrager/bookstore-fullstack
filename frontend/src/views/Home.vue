@@ -9,7 +9,7 @@
         <div v-else-if="books.length===0" class="empty">no books found</div>
         <div v-else class="books">
             <div v-for="book in books":key="book.id" class="book">
-                <img v-if="book.coverId" :src="`https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`" alt="cover" class="cover" @error="(e)=>handleImageError(e,book)">
+                <img v-if="book.coverId" :src="`/covers/${book.coverId}.jpg`"  alt="cover" class="cover" @error="(e)=>e.target.src='/default-cover.jpg'">
                 <h3><strong class="title">Title: </strong>{{ book.title }}</h3>
                 <p><strong class="author">Author: </strong>{{ book.author }}</p>
                 <p><strong class="price">Price: </strong>{{ book.price }}</p>
