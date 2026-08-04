@@ -48,7 +48,7 @@ export const addToCart=async(req:Request,res:Response)=>{
             where:{userId:userId!},
             include:{
                 items:{
-                    where:{bookId:bookId}
+                    where:{bookId:Number(bookId)}
                 }
             }
         })
@@ -132,11 +132,18 @@ export const removeFromCart=async(req:Request,res:Response)=>{
         })
 
         if(!cartItem)return res.status(404).json({errro:'элемент корзины не найден'})
-        if(cartItem.cart.userId!=userId)return res.status(403).json({error:'жоступ запрещен'})
+        if(cartItem.cart.userId!==userId)return res.status(403).json({error:'жоступ запрещен'})
 
-        await prisma.cartItem.delete({
-            where:{id:itemId}
-        })
+        if(cartItem.quantity>1){
+            await prisma.cartItem.update({
+                where:{id:itemId},
+                data:{quantity:{decrement:1}}
+            })
+        }else{
+            await prisma.cartItem.delete({
+                where:{id:itemId}
+            })
+        }
 
         res.json({message:'товар удален из корзины'})
     }catch(error){
