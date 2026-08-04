@@ -3,6 +3,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import Home from "@/views/Home.vue";
 import Cart from '@/views/Cart.vue'
+import Favorites from "@/views/Favorites.vue";
 
 const routes=[
     {
@@ -20,6 +21,10 @@ const routes=[
     {
         path:'/cart',
         component:Cart
+    },
+    {
+        path:'/favorites',
+        component:Favorites
     }
 ]
 

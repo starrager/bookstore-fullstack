@@ -35,8 +35,11 @@
 import {ref,onMounted} from 'vue'
 import api from '../api/api'
 import { useCartStore } from '@/stores/cart'
+import { useFavoritesStore } from '@/stores/favorites'
 
 const cartStore=useCartStore()
+const favoritesStore=useFavoritesStore()
+
 const search=ref('')
 const books=ref([])
 const loading=ref(false)
@@ -103,6 +106,7 @@ const addToFavorites=async(bookId)=>{
             alert('Войдите в аккаунт')
             return
         }
+        await favoritesStore.addFavorite(bookId)
         alert(`Книга ${bookId} добавлена в избранное`)
     }catch(error){
         console.error(error)

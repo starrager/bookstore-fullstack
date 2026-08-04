@@ -2,6 +2,7 @@
     <div class="header">
         <button @click="router.push('/')">Menu</button>
         <button @click="router.push('/cart')">In Cart</button>
+        <button @click="router.push('/favorites')">In Favorites</button>
         <button @click="logout">Exit</button>
     </div>
 </template>
