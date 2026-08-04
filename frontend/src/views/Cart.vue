@@ -2,12 +2,12 @@
     <div class="cart">
         <h1>Cart</h1>
 
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="items.length===0" class="empty">Cart is empty</div>
+        <div v-if="cartStore.loading">Loading...</div>
+        <div v-else-if="cartStore.items.length===0" class="empty">Cart is empty</div>
         <div v-else>
-            <div v-for="item in items":key="item.id" class="cart-item">
+            <div v-for="item in cartStore.items":key="item.id" class="cart-item">
                 <div class="info">
-                    <img v-if="item.book.coverId" :src="`https://covers.openlibrary.org/b/id/${item.book.coverId}-L.jpg`" alt="cover">
+                    <img v-if="item.book.coverId" :src="`/covers/${item.book.coverId}.jpg`" alt="cover" class="cover" @error="(e)=>e.target.style.display='none'">
                     <h3>{{ item.book.title }}</h3>
                     <p>{{ item.book.author }}</p>
                     <p>{{ item.book.price }} ₽ x {{ item.quantity }}</p>
@@ -16,7 +16,7 @@
                 <button class="remove" @click="removeItem(item.id)">Remove</button>
             </div>
             <div class="total">
-                <h2>Total: {{ items.length?totalPrice():0 }}₽</h2>
+                <h2>Total: {{ cartStore.items.length?totalPrice():0 }}₽</h2>
                 <button class="clear" @click="clearCart">Clear cart</button>
             </div>
         </div>
@@ -28,12 +28,11 @@ import { onMounted, onUnmounted } from 'vue';
 import { useCartStore } from '@/stores/cart';
 
 const cartStore=useCartStore()
-const {items,loading}=cartStore
 
-const totalPrice = () => {
-    return items.reduce((sum, item) => {
-        return sum + (item.book.price * item.quantity)
-    }, 0)
+const totalPrice=()=>{
+    return cartStore.items.reduce((sum,item)=>{
+        return sum+(item.book.price*item.quantity)
+    },0)
 }
 
 const removeItem=async(id)=>{
@@ -66,6 +65,13 @@ onUnmounted(()=>{
     max-width:800px;
     margin:0 auto;
     padding:20px;
+}
+.cart-item .cover{
+    width:60px;
+    height:80px;
+    object-fit:cover;
+    border-radius:4px;
+    flex-shrink:0;
 }
 .cart-item{
     display:flex;

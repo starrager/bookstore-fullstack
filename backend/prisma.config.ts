@@ -4,6 +4,12 @@ import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
+     migrations: {
+        db: {
+            provider: 'sqlite',
+            url: 'file:./dev.db',
+        },
+    },
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",

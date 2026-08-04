@@ -1,8 +1,8 @@
 <template>
     <div class="header">
-        <button @click="router.push('/cart')">In Cart</button>
         <button @click="router.push('/')">Menu</button>
-        <button @click="logout">Выйти</button>
+        <button @click="router.push('/cart')">In Cart</button>
+        <button @click="logout">Exit</button>
     </div>
 </template>
 
@@ -12,9 +12,10 @@ import { useRouter } from 'vue-router';
 const router=useRouter()
 
 const logout=async()=>{
-    localStorage.removeItem('token')
-    router.push('/login')
-}
+    if(confirm('Do you really want to log out of your account?')){
+        localStorage.removeItem('token')
+        router.push('/login')
+    }else alert('Error, please repeat later')}
 </script>
 
 <style scoped>

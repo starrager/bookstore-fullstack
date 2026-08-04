@@ -13,7 +13,9 @@
 import {ref} from 'vue'
 import axios from 'axios'
 import {useRouter} from 'vue-router'
+import { useCartStore } from '@/stores/cart'
 
+const cartStore=useCartStore()
 const router=useRouter()
 const email=ref('')
 const password=ref('')
@@ -24,11 +26,13 @@ const login=async()=>{
             email:email.value,
             password:password.value
         })
-        alert('авторизация успешна')
-        router.push('/')
 
         localStorage.setItem('token',response.data.token)
         localStorage.setItem('user',JSON.stringify(response.data.user))
+        await cartStore.getCart()
+        alert('авторизация успешна')
+        router.push('/')
+
     }catch(error){
         console.error(error)
         alert('ошибка авторизации')
