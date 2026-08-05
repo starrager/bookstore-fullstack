@@ -3,6 +3,7 @@
         <button @click="router.push('/')">Menu</button>
         <button @click="router.push('/cart')">In Cart</button>
         <button @click="router.push('/favorites')">In Favorites</button>
+        <button @click="router.push('/orders')">In Orders</button>
         <button @click="logout">Exit</button>
     </div>
 </template>

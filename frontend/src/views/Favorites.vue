@@ -163,7 +163,7 @@ onMounted(()=>{
 .book-card .price{
     font-size:18px;
     font-weight:600;
-    color:#2e7d32;
+    color:black;
 }
 .actions{
     display:flex;

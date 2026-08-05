@@ -1,60 +1,61 @@
 <template>
-    <div class="cart-container">
-        <div class="cart-header">
-            <h1>Cart</h1>
-            <span class="cart-count" v-if="cartStore.items.length">
-                {{ cartStore.items.reduce((sum, item) => sum + item.quantity, 0) }} products
-            </span>
-        </div>
+    <div class="checkout-container">
+        <h1>Making an order</h1>
 
         <div v-if="cartStore.loading">Loading...</div>
-        <div v-else-if="cartStore.items.length === 0" class="empty">
-            <div class="empty-icon">🛒</div>
-            <h2>Cart is empty</h2>
-            <p>Add books to start shopping</p>
+        <div v-else-if="cartStore.items.length===0" class="empty">
+            <p>Cart is empty</p>
             <router-link to="/" class="btn-continue">Continue shopping</router-link>
         </div>
-        <div v-else>
-            <div class="cart-items">
-                <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
-                    <img 
-                        v-if="item.book.coverId" 
-                        :src="`/covers/${item.book.coverId}.jpg`" 
-                        alt="cover" 
-                        class="cover"
-                        @error="(e) => e.target.style.display = 'none'"
-                    >
+
+        <div v-else class="checkout-grid">
+            <div class="checkout-items">
+                <h2>Products</h2>
+                <div v-for="item in cartStore.items":key="item.id" class="checkout-item">
+                    <img v-if="item.book.coverId" :src="`/covers/${item.book.coverId}.jpg`" alt="cover" class="cover" @error="(e)=>e.target.style.display='none'">
                     <div class="item-info">
-                        <h3>{{ item.book.title }}</h3>
-                        <p class="author-text">{{ item.book.author }}</p>
-                        <div class="price-row">
-                            <span>{{ item.book.price }} ₽ × {{ item.quantity }}</span>
-                            <strong>{{ item.book.price * item.quantity }} ₽</strong>
-                        </div>
+                        <h4>{{ item.book.title }}</h4>
+                        <p>{{ item.book.author }}</p>
+                        <p>{{ item.book.price }} ₽ x {{ item.quantity }}</p>
                     </div>
-                    <button class="remove" @click="removeItem(item.id)">Remove</button>
+                    <div class="item-total">
+                        <strong>{{ item.book.price*item.quantity }}</strong>
+                    </div>
+                </div>
+                <div class="checkout-total">
+                    <span>Total:</span>
+                    <strong>{{ totalPrice() }} ₽</strong>
                 </div>
             </div>
 
-            <div class="cart-summary">
-                <div class="summary-row">
-                    <span class="total-label">Total:</span>
-                    <span class="summary-total">{{ totalPrice() }} ₽</span>
-                </div>
-                <div class="summary-actions">
-                    <button class="btn-clear" @click="clear">Clear cart</button>
-                    <button class="btn-checkout">Place an order</button>
-                </div>
+            <div class="checkout-form">
+                <h2>Delivery address</h2>
+                <form @submit.prevent="placeOrder">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" v-model="address" placeholder="st. Pushkina, house 10, apartment 5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" v-model="phone" placeholder="+7 999 123-45-67" required>
+                    </div>
+                    <button type="submit" class="btn-order">Place an order</button>
+                </form>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import {ref,onMounted} from 'vue'
+import {useRouter} from 'vue-router'
 import { useCartStore } from '@/stores/cart';
+import api from '../api/api';
 
+const router=useRouter()
 const cartStore=useCartStore()
+const address=ref('')
+const phone=ref('')
 
 const totalPrice=()=>{
     return cartStore.items.reduce((sum,item)=>{
@@ -62,23 +63,23 @@ const totalPrice=()=>{
     },0)
 }
 
-const removeItem=async(id)=>{
+const placeOrder=async()=>{
     try{
-        if(confirm('Delete an item from the shopping cart?'))await cartStore.removeFromCart(id)
-        alert('Success')
+        const token=localStorage.getItem('token')
+        if(!token){
+            alert('No authorization')
+            router.push('login')
+            return
+        }
+        await api.post('/api/orders',{
+            address:address.value,
+            phone:phone.value
+        })
+        alert('The order has been placed')
+        router.push('/orders')
     }catch(error){
         console.error(error)
-        alert('Error remove item from from the shopping cart, please repeat later')
-    }
-}
-
-const clear=async()=>{
-    try{
-        if(confirm('Empty the shopping cart?'))await cartStore.clearCart()
-        alert('Success')
-    }catch(error){
-        console.error(error)
-        alert('Error remove item from from the shopping cart, please repeat later')
+        alert('Order processing error')
     }
 }
 
@@ -88,49 +89,106 @@ onMounted(()=>{
 </script>
 
 <style scoped>
-.cart-container{
-    max-width:900px;
+.checkout-container{
+    max-width:1000px;
     margin:40px auto;
     padding:0 20px;
 }
-.cart-header{
+.checkout-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:20px;
+}
+.checkout-items{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #e8e8e8;
+}
+.checkout-item{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+}
+.checkout-item:last-child{
+    border-bottom:none;
+}
+.checkout-item .cover{
+    width:50px;
+    height:70px;
+    object-fit:cover;
+    border-radius:4px;
+    flex-shrink:0;
+}
+.checkout-item .item-info{
+    flex:1;
+}
+.checkout-item .item-info h4{
+    margin:0;
+    font-size:16px;
+}
+.checkout-item .item-info p{
+    margin:2px 0;
+    color:#888;
+    font-size:14px;
+}
+.item-total{
+    font-size:16px;
+    font-weight:600;
+    color:#2e7d32;
+}
+.checkout-total{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
+    padding-top:16px;
+    margin-top:16px;
+    border-top:2px solid #333;
+    font-size:20px;
 }
-.cart-header h1{
-    font-size:28px;
-    margin:0;
+.checkout-total strong{
+    color:black;
 }
-.cart-count{
-    background:#f0f0f0;
-    padding:6px 16px;
-    border-radius:20px;
-    font-size:14px;
-    color:#666;
+.checkout-form{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #e8e8e8;
 }
-.loading{
-    text-align:center;
-    padding:60px 0;
-    color:#999;
+.form-group{
+    margin-bottom:16px;
+}
+.form-group label{
+    display:block;
+    margin-bottom:4px;
+    font-weight:500;
+}
+.form-group input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:16px;
+}
+.btn-order{
+    width:100%;
+    padding:14px;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-order:hover{
+    background:#1e5a22;
 }
 .empty{
     text-align:center;
     padding:60px 0;
-}
-.empty-icon{
-    font-size:64px;
-    margin-bottom:16px;
-}
-.empty h2{
-    font-size:24px;
-    color:#333;
-    margin-bottom:8px;
-}
-.empty p{
-    color:#999;
-    margin-bottom:24px;
 }
 .btn-continue{
     display:inline-block;
@@ -139,153 +197,5 @@ onMounted(()=>{
     color:white;
     border-radius:6px;
     text-decoration:none;
-    transition:0.3s;
-}
-.btn-continue:hover{
-    background:#45a049;
-    transform:scale(1.02);
-}
-.cart-items{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-    margin-bottom:30px;
-    align-items:center;
-}
-.cart-item{
-    display:flex;
-    align-items:center;
-    gap:20px;
-    padding:20px 24px;
-    border-radius:16px;
-    background:#fff;
-    border:1px solid #ececec;
-    transition:.25s;
-    animation:show .35s ease;
-    width:100%;
-    max-width:800px;
-}
-.cart-item:hover{
-    transform:translateY(-3px);
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
-.cover{
-    width:100px;
-    height:150px;
-    object-fit:cover;
-    border-radius:10px;
-    flex-shrink:0;
-}
-.item-info{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    flex:1;
-}
-.item-info h3{
-    margin:0;
-    font-size:18px;
-    font-weight:600;
-    color:#1a1a2e;
-}
-.author-text{
-    margin:0;
-    color:#888;
-    font-size:14px;
-}
-.price-row{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    margin-top:4px;
-}
-.price-row span{
-    font-size:15px;
-    color:#333;
-}
-.price-row strong{
-    font-size:18px;
-    color:#2e7d32;
-}
-.remove{
-    padding:8px 18px;
-    border:none;
-    border-radius:8px;
-    background:#e74c3c;
-    color:white;
-    cursor:pointer;
-    font-size:13px;
-    font-weight:500;
-    transition:0.3s;
-    flex-shrink:0;
-}
-.remove:hover{
-    background:#c0392b;
-    transform:scale(1.05);
-}
-.remove:active{
-    transform:scale(0.95);
-}
-.cart-summary{
-    padding:24px 28px;
-    background:#fff;
-    border-radius:12px;
-    border:1px solid #e8e8e8;
-    width:100%;
-    max-width:800px;
-    margin:0 auto;
-}
-.summary-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:20px;
-    font-weight:600;
-}
-.total-label{
-    color:#333;
-}
-.summary-total{
-    color:black;
-    font-size:24px;
-}
-.summary-actions{
-    display:flex;
-    gap:12px;
-    margin-top:16px;
-    justify-content:flex-end;
-}
-.summary-actions button{
-    padding:10px 28px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:500;
-    transition:0.3s;
-}
-.btn-clear{
-    background:#e74c3c;
-    color:white;
-}
-.btn-clear:hover{
-    background:#c0392b;
-}
-.btn-checkout{
-    background:#2e7d32;
-    color:white;
-}
-.btn-checkout:hover{
-    background:#1e5a22;
-}
-@keyframes show{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
 }
 </style>

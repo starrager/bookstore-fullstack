@@ -4,6 +4,8 @@ import Register from "@/views/Register.vue";
 import Home from "@/views/Home.vue";
 import Cart from '@/views/Cart.vue'
 import Favorites from "@/views/Favorites.vue";
+import Orders from "@/views/Orders.vue";
+import Checkout from "@/views/Checkout.vue";
 
 const routes=[
     {
@@ -25,6 +27,14 @@ const routes=[
     {
         path:'/favorites',
         component:Favorites
+    },
+    {
+        path:'/orders',
+        component:Orders
+    },
+    {
+        path:'/checkout',
+        component:Checkout
     }
 ]
 
