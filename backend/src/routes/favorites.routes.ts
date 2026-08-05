@@ -6,7 +6,7 @@ const router=Router()
 
 router.get('/',authMiddleWare,getFavorites)
 router.post('/',authMiddleWare,addFavorite)
-router.delete('/:bookId',addFavorite,removeFavorite)
+router.delete('/:bookId',authMiddleWare,removeFavorite)
 router.get('/check/:bookId',authMiddleWare,checkFavorite)
 
 export default router

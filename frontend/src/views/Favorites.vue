@@ -22,7 +22,7 @@
                     <p class="price">{{ book.price }}₽</p>
                     <div class="actions">
                         <button class="btn-cart" @click="addToCart(book.id)">In Cart</button>
-                        <button class="btn-remove" @click="removeFavorite(book.id)">In Favorites</button>
+                        <button class="btn-remove" @click="removeFromFavorites(book.id)">Remove</button>
                     </div>
                 </div>
             </div>
@@ -66,6 +66,9 @@ const removeFromFavorites=async(bookId)=>{
     }
 }
 
+onMounted(()=>{
+    favoritesStore.getFavorites()
+})
 </script>
 
 <style scoped>
