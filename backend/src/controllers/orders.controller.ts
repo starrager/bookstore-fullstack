@@ -93,7 +93,7 @@ export const getOrders=async(req:Request,res:Response)=>{
 
     }catch(error){
         console.error(error)
-        res.status(500).status(500).json({error:'ошибка получения заказов'})
+        res.status(500).json({error:'ошибка получения заказов'})
     }
 }
 
@@ -129,7 +129,7 @@ export const updateOrderStatus=async(req:Request,res:Response)=>{
 
         if(user?.role!=='admin')return res.status(404).json({error:'доступ запрещен'})
 
-        const validStatuses:any=['pending','paid','shipped','delivered','candeled']
+        const validStatuses:any=['pending','paid','shipped','delivered','candelled']
         if(!validStatuses.includes(status)){
             return res.status(400).json({error:`неверный статус ${validStatuses.join(', ')}`})
         }
@@ -150,7 +150,7 @@ export const updateOrderStatus=async(req:Request,res:Response)=>{
 export const cancelOrder=async(req:Request,res:Response)=>{
     try{
         const userId=req.userId
-        const id=req.params
+        const {id}=req.params
 
         const order=await prisma.order.findUnique({where:{id:Number(id)},include:{items:true}})
         if(!order)return res.status(404).json({error:'заказ не найден'})
@@ -177,7 +177,7 @@ export const cancelOrder=async(req:Request,res:Response)=>{
 
         const updatedOrder=await prisma.order.update({
             where:{id:Number(id)},
-            data:{status:'canceled'},
+            data:{status:'cancelled'},
             include:{items:{include:{book:true}}}
         })
 

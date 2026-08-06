@@ -27,8 +27,15 @@ export const register=async(req:Request,res:Response)=>{
             }
         })
 
+        const token=jwt.sign(
+            {userId:user.id},
+            process.env.JWT_SECRET||'secret_key',
+            {expiresIn:'7d'}
+        )
+
         res.status(201).json({
             message:'пользователь создан',
+            token,
             user:{
                 id:user.id,
                 email:user.email,

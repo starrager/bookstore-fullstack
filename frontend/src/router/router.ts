@@ -6,6 +6,7 @@ import Cart from '@/views/Cart.vue'
 import Favorites from "@/views/Favorites.vue";
 import Orders from "@/views/Orders.vue";
 import Checkout from "@/views/Checkout.vue";
+import Order from '@/views/Order.vue'
 
 const routes=[
     {
@@ -35,6 +36,10 @@ const routes=[
     {
         path:'/checkout',
         component:Checkout
+    },
+    {
+        path:'/order/:id',
+        component:Order
     }
 ]
 
