@@ -88,7 +88,7 @@ const viewOrder=async(id)=>{
     router.push(`/orders/${id}`)
 }
 
-onMounted(()=>{fetchOrders()})
+onMounted(fetchOrders)
 </script>
 
 <style scoped>

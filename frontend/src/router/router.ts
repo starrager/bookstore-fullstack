@@ -38,7 +38,7 @@ const routes=[
         component:Checkout
     },
     {
-        path:'/order/:id',
+        path:'/orders/:id',
         component:Order
     }
 ]
