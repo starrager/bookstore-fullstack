@@ -69,7 +69,9 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import api from '../api/api'
+import { useToast } from '@erag/vue-toastification'
 
+const toast=useToast()
 const router = useRouter()
 const cartStore = useCartStore()
 
@@ -96,11 +98,11 @@ const placeOrder = async () => {
             phone: phone.value
         })
 
-        alert('Заказ оформлен!')
+        toast.success('The order has been placed')
         router.push('/orders')
     } catch (error) {
         console.error(error)
-        alert('Ошибка оформления заказа')
+        toast.error('Order placement error')
     }
 }
 

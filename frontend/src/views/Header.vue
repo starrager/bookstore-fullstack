@@ -10,14 +10,16 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { useToast } from '@erag/vue-toastification';
 
+const toast=useToast()
 const router=useRouter()
 
 const logout=async()=>{
     if(confirm('Do you really want to log out of your account?')){
         localStorage.removeItem('token')
         router.push('/login')
-    }else alert('Error, please repeat later')}
+    }else toast.error('Error, please repeat later')}
 </script>
 
 <style scoped>

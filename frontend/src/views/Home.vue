@@ -36,7 +36,9 @@ import {ref,onMounted} from 'vue'
 import api from '../api/api'
 import { useCartStore } from '@/stores/cart'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useToast } from '@erag/vue-toastification'
 
+const toast=useToast()
 const cartStore=useCartStore()
 const favoritesStore=useFavoritesStore()
 
@@ -92,10 +94,10 @@ const addToCart=async(bookId)=>{
             return
         }
         await cartStore.addToCart(bookId,1)
-        alert(`Книга ${bookId} добавлена в корзину`)
+        toast.success(`The book №${bookId} has been added to the cart`)
     }catch(error){
         console.error(error)
-        alert('ошибка добавления в корзину')
+        toast.error('Error adding to the cart')
     }
 }
 
@@ -107,10 +109,10 @@ const addToFavorites=async(bookId)=>{
             return
         }
         await favoritesStore.addFavorite(bookId)
-        alert(`Книга ${bookId} добавлена в избранное`)
+        toast.success(`The book №${bookId} has been added to the favorites`)
     }catch(error){
         console.error(error)
-        alert('ошибка добавления в избранное')
+        toast.error('Error adding to the favorites')
     }
 }
 

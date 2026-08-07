@@ -35,7 +35,9 @@ import { useFavoritesStore } from '@/stores/favorites';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCartStore } from '@/stores/cart';
+import { useToast } from '@erag/vue-toastification';
 
+const toast=useToast()
 const router=useRouter()
 const favoritesStore=useFavoritesStore()
 const cartStore=useCartStore()
@@ -49,20 +51,20 @@ const addToCart=async(bookId)=>{
             return
         }
         await cartStore.addToCart(bookId,1)
-        alert('Book added to cart')
+        toast.success('Book added to cart')
     }catch(error){
         console.error(error)
-        alert('Error add to cart')
+        toast.error('Error add to cart')
     }
 }
 
 const removeFromFavorites=async(bookId)=>{
     try{
         await favoritesStore.removeFavorite(bookId)
-        alert('Book deleted from favorites')
+        toast.success('Book deleted from favorites')
     }catch(error){
         console.error(error)
-        alert('Error remove from cart')
+        toast.error('Error remove from cart')
     }
 }
 

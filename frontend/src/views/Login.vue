@@ -14,7 +14,9 @@ import {ref} from 'vue'
 import axios from 'axios'
 import {useRouter} from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useToast } from '@erag/vue-toastification'
 
+const toast=useToast()
 const cartStore=useCartStore()
 const router=useRouter()
 const email=ref('')
@@ -30,12 +32,12 @@ const login=async()=>{
         localStorage.setItem('token',response.data.token)
         localStorage.setItem('user',JSON.stringify(response.data.user))
         await cartStore.getCart()
-        alert('авторизация успешна')
+        toast.success('Authorization successful')
         router.push('/')
 
     }catch(error){
         console.error(error)
-        alert('ошибка авторизации')
+        toast.error('Authorization error')
     }
 }
 </script>

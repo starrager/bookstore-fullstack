@@ -15,7 +15,9 @@
 import {ref} from 'vue'
 import axios from 'axios'
 import {useRouter} from 'vue-router'
+import { useToast } from '@erag/vue-toastification'
 
+const toast=useToast()
 const router=useRouter()
 const name=ref('')
 const email=ref('')
@@ -28,7 +30,7 @@ const checkPassword=async()=>{
         else throw(error)
     }catch(error){
         console.error(error)
-        alert('пароли не совпадают')
+        toast.warning('The passwords do not match')
     }
 }
 
@@ -46,7 +48,7 @@ const register=async()=>{
         }
 
         console.log('успешно ', response.data)
-        alert('регистрация успешна')
+        toast.success('Registration is successful')
 
         name.value=''
         email.value=''
@@ -55,7 +57,7 @@ const register=async()=>{
 
     }catch(error){
         console.error('ошибка: ',error.response?.data?.error||'чтото пошло не так')
-        alert('Ошибка регистрации')
+        toast.error('Registration error')
     }
 }
 </script>
