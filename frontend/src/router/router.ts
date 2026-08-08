@@ -7,6 +7,7 @@ import Favorites from "@/views/Favorites.vue";
 import Orders from "@/views/Orders.vue";
 import Checkout from "@/views/Checkout.vue";
 import Order from '@/views/Order.vue'
+import Admin from "@/views/Admin.vue";
 
 const routes=[
     {
@@ -40,6 +41,10 @@ const routes=[
     {
         path:'/orders/:id',
         component:Order
+    },
+    {
+        path:'/admin/books',
+        component:Admin
     }
 ]
 
