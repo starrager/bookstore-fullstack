@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 const app=express()
 const PORT=process.env.PORT||5178
 import authRoutes from './routes/auth.routes'
-import bookRouters from './routes/book.routes'
+import bookRouters from './routes/books.routes'
 import categoriesRoutes from './routes/categories.routes'
 import cartRoutes from './routes/cart.routes'
 import ordersRoutes from './routes/orders.routes'

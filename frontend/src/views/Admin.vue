@@ -1,5 +1,5 @@
 <template>
-    <div class="admin-book">
+    <div class="admin-books">
         <div class="admin-header">
             <h1>Book Management</h1>
             <button class="btn-create" @click="openCreateModal">+ Add Book</button>
@@ -77,7 +77,13 @@
             </div>
         </div>
 
-        <div v-if="showEditModal" class="modal-overlay" @click.self="closeModal">
+        <div v-if="showEditModal" class="modal-overlay" @mousedown="(e)=>{
+            if(e.target===e.currentTarget)dragStart=true
+        }"
+        @mouseup="(e)=>{
+            if(e.target===e.currentTarget&&dragStart)closeModal()
+            dragStart=false
+        }">
             <div class="modal">
                 <h2>Edit Book</h2>
                 <form @submit.prevent="updateBook">
@@ -131,6 +137,7 @@ const categories=ref([])
 const loading=ref(false)
 const showCreateModal=ref(false)
 const showEditModal=ref(false)
+const dragStart=ref(false)
 
 const createForm=ref({
     title:'',
@@ -246,9 +253,9 @@ onMounted(async()=>{
 
 <style scoped>
 .admin-books{
-    max-width:1100px;
-    margin:40px auto;
-    padding:0 20px;
+    max-width:75% !important;
+    margin:0 auto !important;
+    padding:0 20px !important;
 }
 .admin-header{
     display:flex;
