@@ -5,21 +5,40 @@
         <button @click="router.push('/favorites')">In Favorites</button>
         <button @click="router.push('/orders')">In Orders</button>
         <button @click="logout">Exit</button>
+        <button v-if="isAdmin" @click="router.push('/admin/books')">Admin panel</button>
     </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
 import { useToast } from '@erag/vue-toastification';
+import {ref,onMounted} from 'vue'
 
 const toast=useToast()
 const router=useRouter()
+const isAdmin=ref(false)
+const isAuthenticated=ref(false)
+
+const checkAuth=()=>{
+    const token=localStorage.getItem('token')
+    const userData=localStorage.getItem('user')
+    isAuthenticated.value=!!token
+    if(token&&userData){
+        const user=JSON.parse(userData)
+        isAdmin.value=user.role==='admin'
+    }
+}
 
 const logout=async()=>{
     if(confirm('Do you really want to log out of your account?')){
         localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        isAuthenticated.value=false
+        isAdmin.value=false
         router.push('/login')
     }else toast.error('Error, please repeat later')}
+
+onMounted(checkAuth)
 </script>
 
 <style scoped>

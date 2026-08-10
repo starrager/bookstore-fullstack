@@ -44,7 +44,8 @@ const routes=[
     },
     {
         path:'/admin/books',
-        component:Admin
+        component:Admin,
+        meta:{requiresAuth:true,requiresAdmin:true}
     }
 ]
 
