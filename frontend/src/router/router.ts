@@ -53,4 +53,15 @@ const router=createRouter({
     history:createWebHistory(),routes
 })
 
+router.beforeEach((to,form,next)=>{
+    const token=localStorage.getItem('token')
+    const userData=localStorage.getItem('user')
+    if(to.meta.requiresAuth&&!token)return next('/login')
+    if(to.meta.requiresAdmin){
+        const user=userData?JSON.parse(userData):null
+        if(!user||user.role!=='admin')return next('/')
+    }
+    next()
+})
+
 export default router
