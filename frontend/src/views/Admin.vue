@@ -1,124 +1,305 @@
 <template>
-    <div class="admin-books">
-        <div class="admin-header">
-            <h1>Book Management</h1>
-            <button class="btn-create" @click="openCreateModal">+ Add Book</button>
-        </div>
-        
-        <div v-if="loading" class="loading">Loading...</div>
-        <div v-else-if="books.length===0">No books yet</div>
+    <div class="admin-page">
+        <div class="admin-container">
+            <div class="admin-header">
+                <div>
+                    <h1>Book management</h1>
+                    <p>Manage books, prices and stock</p>
+                </div>
 
-        <div v-else class="books-table-wrapper">
-            <table class="books-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Price</th>
-                        <th>In Stock</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="book in books":key="book.id">
-                        <td>{{ book.id }}</td>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.price }} ₽</td>
-                        <td>{{ book.stock }}</td>
-                        <td class="actions">
-                            <button class="btn-edit" @click="openEditModal(book)">EDIT</button>
-                            <button class="btn-remove" @click="deleteBook(book.id)">REMOVE</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <button class="btn-add" @click="showCreateModal=true">
+                    <span>+</span>
+                    Add book
+                </button>
+            </div>
+
+            <div v-if="loading" class="loading">
+                <span class="spinner"></span>
+                Loading...
+            </div>
+
+            <div v-else-if="books.length===0" class="empty">
+                <h2>No books yet</h2>
+                <p>Add your first book to the catalog.</p>
+                <button class="btn-add" @click="showCreateModal=true">
+                    Add book
+                </button>
+            </div>
+
+            <div v-else class="books-table-wrapper">
+                <table class="books-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>In Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="book in books" :key="book.id">
+                            <td class="book-id">{{ book.id }}</td>
+
+                            <td class="book-title">
+                                <strong>{{ book.title }}</strong>
+                            </td>
+
+                            <td class="book-author">
+                                {{ book.author }}
+                            </td>
+
+                            <td class="book-price">
+                                {{ book.price }} ₽
+                            </td>
+
+                            <td>
+                                <span
+                                    class="stock"
+                                    :class="{ 'stock-empty': book.stock===0 }"
+                                >
+                                    {{ book.stock }}
+                                </span>
+                            </td>
+
+                            <td class="actions">
+                                <button
+                                    class="btn-edit"
+                                    @click="openEditModal(book)"
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    class="btn-remove"
+                                    @click="deleteBook(book.id)"
+                                >
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div v-if="showCreateModal" class="modal-overlay" @click.self="closeModal">
+        <div
+            v-if="showCreateModal"
+            class="modal-overlay"
+            @click.self="closeModal"
+        >
             <div class="modal">
-                <h2>Add Book</h2>
+                <div class="modal-header">
+                    <div>
+                        <h2>Add book</h2>
+                        <p>Create a new book in the catalog</p>
+                    </div>
+
+                    <button class="modal-close" @click="closeModal">
+                        ×
+                    </button>
+                </div>
+
                 <form @submit.prevent="createBook">
                     <div class="form-group">
                         <label>Title *</label>
-                        <input type="text" v-model="createForm.title" required>
+                        <input
+                            type="text"
+                            v-model="createForm.title"
+                            placeholder="Book title"
+                            required
+                        >
                     </div>
+
                     <div class="form-group">
                         <label>Author *</label>
-                        <input type="text" v-model="createForm.author" required>
+                        <input
+                            type="text"
+                            v-model="createForm.author"
+                            placeholder="Author name"
+                            required
+                        >
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                        <label>Price *</label>
-                        <input type="number" v-model="createForm.price" required min="0">
+                            <label>Price *</label>
+                            <input
+                                type="number"
+                                v-model="createForm.price"
+                                placeholder="0"
+                                required
+                                min="0"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock *</label>
+                            <input
+                                type="number"
+                                v-model="createForm.stock"
+                                placeholder="0"
+                                required
+                                min="0"
+                            >
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Stock *</label>
-                        <input type="number" v-model="createForm.stock" required min="0">
-                    </div>
-                    </div>
+
                     <div class="form-group">
                         <label>Category</label>
+
                         <select v-model="createForm.categoryId">
                             <option value="">No Category</option>
-                            <option v-for="cat in categories":key="cat.id" :value="cat.id">{{cat.name}}</option>
+
+                            <option
+                                v-for="cat in categories"
+                                :key="cat.id"
+                                :value="cat.id"
+                            >
+                                {{ cat.name }}
+                            </option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea v-model="createForm.description" rows="3"></textarea>
+
+                        <textarea
+                            v-model="createForm.description"
+                            rows="3"
+                            placeholder="Book description"
+                        ></textarea>
                     </div>
+
                     <div class="form-actions">
-                        <button type="button" @click="closeModal" class="btn-cancel">Cancel</button>
-                        <button type="submit" class="btn-submit">Create</button>
+                        <button
+                            type="button"
+                            @click="closeModal"
+                            class="btn-cancel"
+                        >
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="btn-submit">
+                            Create book
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div v-if="showEditModal" class="modal-overlay" @mousedown="(e)=>{
-            if(e.target===e.currentTarget)dragStart=true
-        }"
-        @mouseup="(e)=>{
-            if(e.target===e.currentTarget&&dragStart)closeModal()
-            dragStart=false
-        }">
+        <div
+            v-if="showEditModal"
+            class="modal-overlay"
+            @mousedown="(e)=>{
+                if(e.target===e.currentTarget)dragStart=true
+            }"
+            @mouseup="(e)=>{
+                if(e.target===e.currentTarget&&dragStart)closeModal()
+                dragStart=false
+            }"
+        >
             <div class="modal">
-                <h2>Edit Book</h2>
+                <div class="modal-header">
+                    <div>
+                        <h2>Edit book</h2>
+                        <p>Update book information</p>
+                    </div>
+
+                    <button class="modal-close" @click="closeModal">
+                        ×
+                    </button>
+                </div>
+
                 <form @submit.prevent="updateBook">
                     <div class="form-group">
                         <label>Title *</label>
-                        <input type="text" v-model="editForm.title" required>
+
+                        <input
+                            type="text"
+                            v-model="editForm.title"
+                            placeholder="Book title"
+                            required
+                        >
                     </div>
+
                     <div class="form-group">
                         <label>Author *</label>
-                        <input type="text" v-model="editForm.author" required>
+
+                        <input
+                            type="text"
+                            v-model="editForm.author"
+                            placeholder="Author name"
+                            required
+                        >
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                        <label>Price *</label>
-                        <input type="number" v-model="editForm.price" required min="0">
+                            <label>Price *</label>
+
+                            <input
+                                type="number"
+                                v-model="editForm.price"
+                                placeholder="0"
+                                required
+                                min="0"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock *</label>
+
+                            <input
+                                type="number"
+                                v-model="editForm.stock"
+                                placeholder="0"
+                                required
+                                min="0"
+                            >
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Stock *</label>
-                        <input type="number" v-model="editForm.stock" required min="0">
-                    </div>
-                    </div>
+
                     <div class="form-group">
                         <label>Category</label>
+
                         <select v-model="editForm.categoryId">
                             <option value="">No Category</option>
-                            <option v-for="cat in categories":key="cat.id" :value="cat.id">{{cat.name}}</option>
+
+                            <option
+                                v-for="cat in categories"
+                                :key="cat.id"
+                                :value="cat.id"
+                            >
+                                {{ cat.name }}
+                            </option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea v-model="editForm.description" rows="3"></textarea>
+
+                        <textarea
+                            v-model="editForm.description"
+                            rows="3"
+                            placeholder="Book description"
+                        ></textarea>
                     </div>
+
                     <div class="form-actions">
-                        <button type="button" @click="closeModal" class="btn-cancel">Cancel</button>
-                        <button type="submit" class="btn-submit">Save</button>
+                        <button
+                            type="button"
+                            @click="closeModal"
+                            class="btn-cancel"
+                        >
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="btn-submit">
+                            Save changes
+                        </button>
                     </div>
                 </form>
             </div>
@@ -252,153 +433,482 @@ onMounted(async()=>{
 </script>
 
 <style scoped>
-.admin-books{
-    max-width:75% !important;
-    margin:0 auto !important;
-    padding:0 20px !important;
+.admin-page{
+    min-height:calc(100vh - 80px);
+    padding:45px 20px 60px;
+    background:#f5f6f4;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:#202522;
+}
+.admin-container{
+    max-width:1100px;
+    margin:0 auto;
 }
 .admin-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    gap:20px;
+    margin-bottom:28px;
+    animation:pageAppear .35s ease;
 }
 .admin-header h1{
-    margin:0;
+    margin:0 0 6px;
+    color:#202522;
     font-size:28px;
+    font-weight:700;
+    letter-spacing:-.4px;
 }
-.btn-create{
-    padding:10px 24px;
-    background:#2e7d32;
-    color:white;
-    border:none;
-    border-radius:8px;
+.admin-header p{
+    margin:0;
+    color:#68706a;
+    font-size:14px;
+}
+.btn-add{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    gap:7px;
+    min-height:43px;
+    padding:0 18px;
+    border:0;
+    border-radius:9px;
+    background:#318a3e;
+    color:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
     cursor:pointer;
-    font-size:16px;
+    box-shadow:0 5px 14px rgba(49,138,62,.12);
+    transition:background .2s,transform .2s,box-shadow .2s;
 }
-.btn-create:hover{
-    background:#1e5a22;
+.btn-add span{
+    font-size:18px;
+    line-height:1;
+    font-weight:400;
+}
+.btn-add:hover{
+    background:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 7px 18px rgba(49,138,62,.2);
 }
 .books-table-wrapper{
-    overflow-x:auto;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:14px;
+    box-shadow:0 8px 25px rgba(0,0,0,.055);
+    animation:cardAppear .4s ease;
 }
 .books-table{
     width:100%;
     border-collapse:collapse;
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.books-table thead{
+    background:#fafbfa;
 }
 .books-table th{
-    background:#f5f5f5;
+    padding:14px 16px;
+    border-bottom:1px solid #e1e4e1;
+    color:#68706a;
     text-align:left;
-    padding:12px 16px;
-    font-weight:600;
+    font-size:11px;
+    font-weight:650;
+    letter-spacing:.3px;
+    text-transform:uppercase;
 }
 .books-table td{
-    padding:10px 16px;
-    border-bottom:1px solid #eee;
+    padding:15px 16px;
+    border-bottom:1px solid #edf0ed;
+    color:#4e5650;
+    font-size:13px;
+}
+.books-table tbody tr{
+    transition:background .2s;
+}
+.books-table tbody tr:hover{
+    background:#fafcf9;
+}
+.books-table tbody tr:last-child td{
+    border-bottom:0;
+}
+.book-id{
+    width:45px;
+    color:#929992!important;
+    font-size:12px!important;
+}
+.book-title{
+    max-width:260px;
+}
+.book-title strong{
+    display:block;
+    overflow:hidden;
+    color:#202522;
+    font-weight:600;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.book-author{
+    color:#68706a!important;
+}
+.book-price{
+    color:#277532!important;
+    font-weight:650;
+    white-space:nowrap;
+}
+.stock{
+    display:inline-flex;
+    justify-content:center;
+    min-width:34px;
+    padding:4px 8px;
+    border-radius:6px;
+    background:#edf7ef;
+    color:#31813d;
+    font-size:12px;
+    font-weight:600;
+}
+.stock-empty{
+    background:#fff0f0;
+    color:#c13e3e;
 }
 .actions{
     display:flex;
-    gap:8px;
+    justify-content:flex-end;
+    gap:7px;
+    white-space:nowrap;
 }
-.actions button{
-    padding:6px 12px;
-    border:none;
-    border-radius:6px;
+.btn-edit,
+.btn-remove{
+    min-height:34px;
+    padding:0 11px;
+    border-radius:7px;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
     cursor:pointer;
-    font-size:16px;
+    transition:background .2s,border-color .2s,color .2s,transform .2s;
 }
 .btn-edit{
-    background:#ffc107;
-    color:#333;
+    border:1px solid #318a3e;
+    background:#fff;
+    color:#318a3e;
 }
 .btn-edit:hover{
-    background:#e0a800;
+    background:#f1f8f2;
+    border-color:#277532;
+    color:#277532;
+    transform:translateY(-1px);
 }
-.btn-delete{
-    background:#e74c3c;
-    color:white;
+.btn-remove{
+    border:1px solid #e1cccc;
+    background:#fff;
+    color:#c13e3e;
 }
-.btn-delete:hover{
-    background:#c0392b;
+.btn-remove:hover{
+    border-color:#d65a5a;
+    background:#fff5f5;
+    transform:translateY(-1px);
 }
-.loading,.empty{
-    text-align:center;
-    padding:60px 0;
-    color:#999;
-}
-
-.modal-overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background:rgba(0,0,0,0.5);
+.loading{
+    min-height:300px;
     display:flex;
     justify-content:center;
     align-items:center;
+    gap:9px;
+    color:#68706a;
+    font-size:14px;
+}
+.spinner{
+    width:15px;
+    height:15px;
+    border:2px solid #dfe5df;
+    border-top-color:#318a3e;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+.empty{
+    max-width:500px;
+    margin:60px auto;
+    padding:42px 35px;
+    box-sizing:border-box;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:16px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.07);
+    animation:pageAppear .35s ease;
+}
+.empty h2{
+    margin:0 0 8px;
+    color:#202522;
+    font-size:22px;
+}
+.empty p{
+    margin:0 0 22px;
+    color:#68706a;
+    font-size:14px;
+}
+.modal-overlay{
+    position:fixed;
     z-index:1000;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    box-sizing:border-box;
+    background:rgba(25,30,26,.42);
+    backdrop-filter:blur(3px);
+    animation:overlayAppear .2s ease;
 }
 .modal{
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    max-width:550px;
-    width:90%;
-    max-height:90vh;
-    overflow-y:auto;
+    width:100%;
+    max-width:500px;
+    max-height:calc(100vh - 40px);
+    overflow:auto;
+    padding:28px;
+    box-sizing:border-box;
+    border:1px solid #e1e4e1;
+    border-radius:15px;
+    background:#fff;
+    box-shadow:0 20px 60px rgba(0,0,0,.16);
+    animation:modalAppear .25s ease;
 }
-.modal h2{
-    margin-top:0;
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    margin-bottom:24px;
+}
+.modal-header h2{
+    margin:0 0 5px;
+    color:#202522;
+    font-size:21px;
+    font-weight:700;
+}
+.modal-header p{
+    margin:0;
+    color:#68706a;
+    font-size:12px;
+}
+.modal-close{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:30px;
+    height:30px;
+    padding:0;
+    border:0;
+    border-radius:7px;
+    background:#f2f4f2;
+    color:#68706a;
+    font-size:21px;
+    line-height:1;
+    cursor:pointer;
+    transition:background .2s,color .2s,transform .2s;
+}
+.modal-close:hover{
+    background:#e9ece9;
+    color:#202522;
+    transform:rotate(90deg);
 }
 .form-group{
-    margin-bottom:14px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-bottom:16px;
 }
 .form-group label{
-    display:block;
-    margin-bottom:4px;
-    font-weight:500;
+    color:#303631;
+    font-size:13px;
+    font-weight:600;
 }
 .form-group input,
 .form-group select,
 .form-group textarea{
     width:100%;
-    padding:8px 12px;
-    border:1px solid #ccc;
-    border-radius:6px;
-    font-size:15px;
+    box-sizing:border-box;
+    padding:11px 12px;
+    border:1px solid #cfd5d0;
+    border-radius:8px;
+    outline:none;
+    background:#fff;
+    color:#202522;
+    font-family:inherit;
+    font-size:13px;
+    transition:border-color .2s,box-shadow .2s;
+}
+.form-group textarea{
+    min-height:85px;
+    resize:vertical;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+    color:#9aa19c;
+}
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover{
+    border-color:#aab2ac;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#318a3e;
+    box-shadow:0 0 0 3px rgba(49,138,62,.1);
 }
 .form-row{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
+    gap:14px;
 }
 .form-actions{
     display:flex;
-    gap:12px;
     justify-content:flex-end;
-    margin-top:16px;
+    gap:9px;
+    margin-top:23px;
+    padding-top:18px;
+    border-top:1px solid #e7e9e7;
+}
+.btn-cancel,
+.btn-submit{
+    min-height:41px;
+    padding:0 17px;
+    border-radius:8px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s;
 }
 .btn-cancel{
-    padding:8px 20px;
-    background:#e0e0e0;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
+    border:1px solid #d5dad6;
+    background:#fff;
+    color:#68706a;
+}
+.btn-cancel:hover{
+    background:#f5f6f4;
+    color:#303631;
+    transform:translateY(-1px);
 }
 .btn-submit{
-    padding:8px 20px;
-    background:#2e7d32;
-    color:white;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
+    border:1px solid #318a3e;
+    background:#318a3e;
+    color:#fff;
 }
 .btn-submit:hover{
-    background:#1e5a22;
+    border-color:#277532;
+    background:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(49,138,62,.18);
+}
+@keyframes pageAppear{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes cardAppear{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes overlayAppear{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+@keyframes modalAppear{
+    from{
+        opacity:0;
+        transform:translateY(12px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+@media(max-width:800px){
+    .admin-page{
+        padding:30px 15px 45px;
+    }
+    .books-table-wrapper{
+        overflow-x:auto;
+    }
+    .books-table{
+        min-width:800px;
+    }
+}
+@media(max-width:600px){
+    .admin-page{
+        padding:25px 12px 40px;
+    }
+    .admin-header{
+        align-items:flex-start;
+    }
+    .admin-header h1{
+        font-size:24px;
+    }
+    .admin-header p{
+        font-size:12px;
+    }
+    .btn-add{
+        min-height:40px;
+        padding:0 13px;
+        font-size:12px;
+    }
+    .modal{
+        padding:22px;
+        border-radius:13px;
+    }
+}
+@media(max-width:450px){
+    .form-row{
+        grid-template-columns:1fr;
+        gap:0;
+    }
+    .form-actions{
+        flex-direction:column-reverse;
+    }
+    .btn-cancel,
+    .btn-submit{
+        width:100%;
+    }
+}
+@media(prefers-reduced-motion:reduce){
+    .admin-header,
+    .books-table-wrapper,
+    .empty,
+    .modal-overlay,
+    .modal{
+        animation:none;
+    }
+    .btn-add,
+    .btn-edit,
+    .btn-remove,
+    .modal-close,
+    .btn-cancel,
+    .btn-submit{
+        transition:none;
+    }
 }
 </style>

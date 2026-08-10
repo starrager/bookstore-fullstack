@@ -1,34 +1,79 @@
 <template>
-    <div class="home">
-        <div class="search">
-            <input type="text" v-model="search" @keyup.enter="fetchBooks" placeholder="Search by title or author">
-            <button class="find" @click="fetchBooks">Find</button>
+<div class="shop-page">
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-label">BOOKSTORE</span>
+            <h1>Find your next story</h1>
+            <p>Discover books worth reading.</p>
         </div>
+    </section>
 
-        <div v-if="loading" class="loading">Loading...</div>
-        <div v-else-if="books.length===0" class="empty">no books found</div>
-        <div v-else class="books">
-            <div v-for="book in books":key="book.id" class="book">
-                <img v-if="book.coverId" :src="`/covers/${book.coverId}.jpg`"  alt="cover" class="cover" @error="(e)=>e.target.src='/default-cover.jpg'">
-                <h3><strong class="title">Title: </strong>{{ book.title }}</h3>
-                <p><strong class="author">Author: </strong>{{ book.author }}</p>
-                <p><strong class="price">Price: </strong>{{ book.price }}</p>
-                <p><strong class="rating">Rating: </strong>{{ book.avgRating?.toFixed(1)||'No' }}</p>
-                <p><strong class="category">Category: </strong>{{ book.category?.name||'No category' }}</p>
+    <div class="search">
+        <input v-model="search" type="text" placeholder="Search by title or author">
+        <button @click="findBooks">Find</button>
+    </div>
 
-                <div class="actions">
-                    <button @click="addToCart(book.id)">In Cart</button>
-                    <button @click="addToFavorites(book.id)">If Favorite</button>
+    <div v-if="loading" class="loading">Loading...</div>
+
+    <div v-else-if="books.length===0" class="empty">
+        <h2>No books found</h2>
+        <p>Try changing your search.</p>
+    </div>
+
+    <div v-else class="books">
+        <article v-for="book in books" :key="book.id" class="book">
+            <div class="cover-wrapper">
+                <img
+                    v-if="book.coverId"
+                    :src="`/covers/${book.coverId}.jpg`"
+                    alt="cover"
+                    class="cover"
+                    @error="(e)=>e.target.src='/default-cover.jpg'"
+                >
+            </div>
+
+            <div class="book-info">
+                <span class="category">{{ book.category?.name||'No category' }}</span>
+
+                <h3 class="title">{{ book.title }}</h3>
+
+                <p class="author">{{ book.author }}</p>
+
+                <div class="rating">
+                    <span class="star">★</span>
+                    <span>{{ book.avgRating?.toFixed(1)||'No rating' }}</span>
+                </div>
+
+                <div class="book-bottom">
+                    <span class="price">{{ book.price }} ₽</span>
+
+                    <div class="actions">
+                        <button class="cart-button" @click="addToCart(book.id)">
+                            In Cart
+                        </button>
+                        <button class="favorite-button" @click="addToFavorites(book.id)">
+                            ♡
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="pagination" v-if="pagination.total>0">
-            <button @click="prevPage" :disabled="pagination.page<=1">Prev page</button>
-            <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
-            <button @click="nextPage" :disabled="pagination.page>=pagination.pages">Next page</button>
-        </div>
+        </article>
     </div>
+
+    <div class="pagination" v-if="pagination.total>0">
+        <button @click="prevPage" :disabled="pagination.page<=1">
+            Prev
+        </button>
+
+        <span>
+            {{ pagination.page }} / {{ pagination.pages }}
+        </span>
+
+        <button @click="nextPage" :disabled="pagination.page>=pagination.pages">
+            Next
+        </button>
+    </div>
+</div>
 </template>
 
 <script setup>
@@ -120,10 +165,60 @@ onMounted(fetchBooks)
 </script>
 
 <style scoped>
-.home{
-    max-width:1200px;
+.shop-page{
+    width:100%;
+    max-width:1150px;
     margin:0 auto;
-    padding:20px;
+    padding:0 20px 50px;
+    box-sizing:border-box;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.hero{
+    position:relative;
+    display:flex;
+    align-items:center;
+    min-height:210px;
+    margin:25px 0 22px;
+    padding:35px 45px;
+    box-sizing:border-box;
+    overflow:hidden;
+    border-radius:18px;
+    background:linear-gradient(120deg,#1f7130,#318a3e 55%,#55a762);
+    color:white;
+    box-shadow:0 12px 30px rgba(39,123,52,.18);
+}
+.hero::after{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    right:-70px;
+    top:-100px;
+    border-radius:50%;
+    background:rgba(255,255,255,.1);
+}
+.hero-content{
+    position:relative;
+    z-index:1;
+}
+.hero-label{
+    display:inline-block;
+    margin-bottom:8px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:2px;
+    opacity:.8;
+}
+.hero h1{
+    margin:0 0 8px;
+    font-size:36px;
+    line-height:1.1;
+    letter-spacing:-1px;
+}
+.hero p{
+    margin:0;
+    font-size:16px;
+    opacity:.85;
 }
 .search{
     display:flex;
@@ -132,105 +227,294 @@ onMounted(fetchBooks)
 }
 .search input{
     flex:1;
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:4px;
-    font-size:16px;
+    min-width:0;
+    padding:14px 16px;
+    border:1px solid #d9dedb;
+    border-radius:10px;
+    outline:none;
+    background:#fff;
+    color:#202522;
+    font-family:inherit;
+    font-size:15px;
+    transition:border-color .2s,box-shadow .2s;
+}
+.search input:focus{
+    border-color:#318a3e;
+    box-shadow:0 0 0 3px rgba(49,138,62,.1);
 }
 .search button{
-    padding:10px 24px;
-    background:#4CAF50;
+    padding:0 25px;
+    border:0;
+    border-radius:10px;
+    background:#318a3e;
     color:white;
-    border:none;
-    border-radius:4px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
     cursor:pointer;
+    transition:background .2s,transform .2s,box-shadow .2s;
+}
+.search button:hover{
+    background:#277b34;
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(49,138,62,.2);
+}
+.search button:active{
+    transform:scale(.97);
 }
 .books{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    grid-template-columns:repeat(4,1fr);
     gap:20px;
-}
-.book{
-    border:1px solid #eee;
-    border-radius:8px;
-    padding:16px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    transition:0.2s;
-}
-.book:hover{
-    transform:translateY(-4px);
-    box-shadow:0 4px 16px rgba(0,0,0,0.15);
-}
-.book h3{
-    margin-top:0;
-    margin-bottom:8px;
-}
-.book p{
-    margin:4px 0;
-}
-.actions{
-    display:flex;
-    gap:10px;
-    margin-top:12px;
-}
-.actions button:first-child{
-    background:#4CAF50;
-    color:white;
-    border:none;
-    padding:6px 14px;
-    border-radius:4px;
-    cursor:pointer;
-}
-.actions button:last-child{
-    background:#ff6b6b;
-    color:white;
-    border:none;
-    padding:6px 14px;
-    border-radius:4px;
-    cursor:pointer;
-}
-.pagination{
-    display:flex;
-    gap:16px;
-    justify-content:center;
-    margin-top:30px;
-    align-items:center;
-}
-.pagination button{
-    padding:8px 16px;
-    border:1px solid #ccc;
-    border-radius:4px;
-    background:white;
-    cursor:pointer;
-}
-.pagination button:disabled{
-    opacity:0.5;
-    cursor:default;
-}
-.loading,.empty{
-    text-align:center;
-    padding:40px;
-    color:#666;
 }
 .book{
     display:flex;
     flex-direction:column;
-    border:1px solid #eee;
-    border-radius:8px;
-    padding:16px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    transition:0.2s;
+    min-width:0;
+    overflow:hidden;
+    border:1px solid #e1e4e1;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.04);
+    transition:transform .25s,box-shadow .25s,border-color .25s;
 }
 .book:hover{
-    transform:translateY(-4px);
-    box-shadow:0 4px 16px rgba(0,0,0,0.15);
+    transform:translateY(-6px);
+    border-color:#cdd8cf;
+    box-shadow:0 14px 28px rgba(31,61,37,.11);
+}
+.cover-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:330px;
+    padding:14px;
+    box-sizing:border-box;
+    background:#f1f3f1;
+    overflow:hidden;
 }
 .cover{
     width:100%;
-    height:auto;
-    max-height:300px;
-    object-fit:cover;
-    border-radius:4px;
-    margin-bottom:12px;
+    height:100%;
+    object-fit:contain;
+    border-radius:7px;
+    transition:transform .35s;
+}
+.book:hover .cover{
+    transform:scale(1.04);
+}
+.book-info{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    padding:17px;
+}
+.category{
+    align-self:flex-start;
+    margin-bottom:8px;
+    padding:4px 8px;
+    border-radius:5px;
+    background:#edf6ee;
+    color:#318a3e;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+.title{
+    margin:0 0 6px;
+    color:#202522;
+    font-size:17px;
+    line-height:1.3;
+    font-weight:700;
+}
+.author{
+    margin:0 0 12px;
+    color:#737a75;
+    font-size:14px;
+}
+.rating{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    margin-bottom:15px;
+    color:#626963;
+    font-size:13px;
+}
+.star{
+    color:#e7a928;
+    font-size:15px;
+}
+.book-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px solid #edf0ed;
+}
+.price{
+    color:#202522;
+    font-size:18px;
+    font-weight:750;
+    white-space:nowrap;
+}
+.actions{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.cart-button{
+    padding:8px 11px;
+    border:0;
+    border-radius:7px;
+    background:#318a3e;
+    color:white;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s,transform .2s;
+}
+.cart-button:hover{
+    background:#277b34;
+    transform:translateY(-1px);
+}
+.favorite-button{
+    width:34px;
+    height:34px;
+    padding:0;
+    border:1px solid #e2e5e2;
+    border-radius:7px;
+    background:#fff;
+    color:#9a4d4d;
+    font-size:18px;
+    cursor:pointer;
+    transition:background .2s,color .2s,transform .2s;
+}
+.favorite-button:hover{
+    background:#fff2f2;
+    color:#c03939;
+    transform:scale(1.05);
+}
+.loading{
+    padding:70px 20px;
+    text-align:center;
+    color:#737a75;
+    font-size:15px;
+}
+.empty{
+    padding:70px 20px;
+    text-align:center;
+    border:1px dashed #d5dbd6;
+    border-radius:14px;
+    background:#fff;
+}
+.empty h2{
+    margin:0 0 8px;
+    color:#303632;
+}
+.empty p{
+    margin:0;
+    color:#7a817c;
+}
+.pagination{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    margin-top:35px;
+}
+.pagination button{
+    padding:9px 16px;
+    border:1px solid #d8ded9;
+    border-radius:8px;
+    background:#fff;
+    color:#3d443f;
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+    transition:background .2s,color .2s,border-color .2s;
+}
+.pagination button:hover:not(:disabled){
+    border-color:#318a3e;
+    background:#f0f6f1;
+    color:#277b34;
+}
+.pagination button:disabled{
+    cursor:not-allowed;
+    opacity:.4;
+}
+.pagination span{
+    color:#656d67;
+    font-size:14px;
+    font-weight:600;
+}
+@media(max-width:1000px){
+    .books{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+@media(max-width:750px){
+    .shop-page{
+        padding:0 12px 40px;
+    }
+    .hero{
+        min-height:180px;
+        padding:28px;
+    }
+    .hero h1{
+        font-size:30px;
+    }
+    .books{
+        grid-template-columns:repeat(2,1fr);
+        gap:14px;
+    }
+    .cover-wrapper{
+        height:280px;
+    }
+}
+@media(max-width:500px){
+    .hero{
+        min-height:160px;
+        padding:24px;
+    }
+    .hero h1{
+        font-size:25px;
+    }
+    .hero p{
+        font-size:14px;
+    }
+    .search{
+        gap:7px;
+    }
+    .search button{
+        padding:0 17px;
+    }
+    .books{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+    .cover-wrapper{
+        height:230px;
+        padding:9px;
+    }
+    .book-info{
+        padding:12px;
+    }
+    .title{
+        font-size:14px;
+    }
+    .author{
+        font-size:12px;
+    }
+    .price{
+        font-size:15px;
+    }
+    .cart-button{
+        padding:7px 8px;
+        font-size:11px;
+    }
 }
 </style>

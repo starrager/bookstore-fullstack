@@ -1,37 +1,65 @@
 <template>
-    <div class="orders-container">
-        <div class="orders-header">
-            <h1>My orders</h1>
-            <span v-if="orders.length" class="count">{{  orders.length }} orders</span>
-        </div>
-
-        <div v-if="loading">Loading...</div>
-
-        <div v-if="orders.length===0" class="empry">
-            <h2>You dont have any orders yet</h2>
-            <p>Go to the catalog and place your first order</p>
-            <router-link to="/" class="btn-continue">Start shopping</router-link>
-        </div>
-
-        <div v-else>
-            <div v-for="order in orders":key="orders.id" class="order-card" @click="viewOrder(order.id)">
-                <div class="orders-header">
-                    <span class="order-id">Order #{{ order.id }}</span>
-                    <span class="order-date">Date: {{ formatDate(order.createdAt) }}</span>
-                    <span class="order-status">{{ getStatusText(order.status) }}</span>
+    <div class="orders-page">
+        <div class="orders-container">
+            <div class="orders-header">
+                <div>
+                    <h1>My orders</h1>
+                    <p>View your order history and status</p>
                 </div>
 
-                <div class="order-body">
-                    <div class="order-items">
-                        <div v-for="item in order.items":key="item.id" class="order-item">
-                            <span>{{ item.book.title }}</span>
-                            <span>{{ item.quantity }} x {{ item.price }}</span>
+                <span v-if="orders.length" class="count">
+                    {{ orders.length }} orders
+                </span>
+            </div>
+
+            <div v-if="loading" class="loading">
+                <span class="spinner"></span>
+                Loading...
+            </div>
+
+            <div v-else-if="orders.length===0" class="empty">
+                <h2>You don't have any orders yet</h2>
+                <p>Go to the catalog and place your first order</p>
+                <router-link to="/" class="btn-continue">Start shopping</router-link>
+            </div>
+
+            <div v-else class="orders-list">
+                <div
+                    v-for="order in orders"
+                    :key="order.id"
+                    class="order-card"
+                    @click="viewOrder(order.id)"
+                >
+                    <div class="order-header">
+                        <div class="order-main">
+                            <span class="order-id">Order #{{ order.id }}</span>
+                            <span class="order-date">
+                                {{ formatDate(order.createdAt) }}
+                            </span>
+                        </div>
+
+                        <span class="order-status" :class="order.status">
+                            {{ getStatusText(order.status) }}
+                        </span>
+                    </div>
+
+                    <div class="order-body">
+                        <div class="order-items">
+                            <div
+                                v-for="item in order.items"
+                                :key="item.id"
+                                class="order-item"
+                            >
+                                <span>{{ item.book.title }}</span>
+                                <span>{{ item.quantity }} x {{ item.price }} ₽</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="order-total">
-                    <strong>Total: {{ order.total }}₽</strong>
+                    <div class="order-total">
+                        <span>Total</span>
+                        <strong>{{ order.total }} ₽</strong>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,136 +120,284 @@ onMounted(fetchOrders)
 </script>
 
 <style scoped>
+.orders-page{
+    min-height:calc(100vh - 80px);
+    padding:45px 20px 60px;
+    background:#f5f6f4;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:#202522;
+}
 .orders-container{
     max-width:900px;
-    margin:40px auto;
-    padding:0 20px;
+    margin:0 auto;
 }
 .orders-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    margin-bottom:28px;
+    animation:pageAppear .35s ease;
 }
 .orders-header h1{
+    margin:0 0 6px;
+    color:#202522;
     font-size:28px;
+    font-weight:700;
+    letter-spacing:-.4px;
+}
+.orders-header p{
     margin:0;
+    color:#68706a;
+    font-size:14px;
 }
 .count{
-    background:#f0f0f0;
-    padding:6px 16px;
+    padding:6px 13px;
+    border:1px solid #dfe3df;
     border-radius:20px;
-    font-size:14px;
-    color:#666;
+    background:#fff;
+    color:#68706a;
+    font-size:13px;
 }
-.loading{
-    text-align:center;
-    padding:60px 0;
-    color:#999;
-}
-.empty{
-    text-align:center;
-    padding:60px 0;
-}
-.empty-icon{
-    font-size:64px;
-    margin-bottom:16px;
-}
-.empty h2{
-    font-size:24px;
-    color:#333;
-    margin-bottom:8px;
-}
-.empty p{
-    color:#999;
-    margin-bottom:24px;
-}
-.btn-continue{
-    display:inline-block;
-    padding:10px 32px;
-    background:#4CAF50;
-    color:white;
-    border-radius:6px;
-    text-decoration:none;
-    transition:0.3s;
-}
-.btn-continue:hover{
-    background:#45a049;
-    transform:scale(1.02);
+.orders-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
 }
 .order-card{
-    background:#fff;
-    border:1px solid #e8e8e8;
-    border-radius:12px;
     padding:20px;
-    margin-bottom:16px;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:13px;
+    box-shadow:0 8px 25px rgba(0,0,0,.055);
     cursor:pointer;
-    transition:0.3s;
+    animation:cardAppear .4s ease both;
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+}
+.order-card:nth-child(2){
+    animation-delay:.05s;
+}
+.order-card:nth-child(3){
+    animation-delay:.1s;
 }
 .order-card:hover{
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-    transform:translateY(-2px);
+    transform:translateY(-3px);
+    border-color:#d6ddd7;
+    box-shadow:0 12px 28px rgba(0,0,0,.09);
 }
 .order-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding-bottom:12px;
-    border-bottom:1px solid #eee;
+    gap:15px;
+    margin:0;
+    padding-bottom:14px;
+    border-bottom:1px solid #e7e9e7;
+}
+.order-main{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
 }
 .order-id{
-    font-weight:600;
-    font-size:16px;
+    color:#202522;
+    font-size:15px;
+    font-weight:650;
 }
 .order-date{
-    color:#888;
-    font-size:14px;
+    color:#88908a;
+    font-size:12px;
 }
 .order-status{
-    padding:4px 12px;
+    padding:5px 11px;
     border-radius:20px;
-    font-size:13px;
-    font-weight:500;
+    font-size:12px;
+    font-weight:600;
 }
 .order-status.pending{
-    background:#fff3cd;
-    color:#856404;
+    background:#fff6dc;
+    color:#a87800;
 }
 .order-status.paid{
-    background:#d4edda;
-    color:#155724;
+    background:#edf7ef;
+    color:#31813d;
 }
 .order-status.shipped{
-    background:#cce5ff;
-    color:#004085;
+    background:#eef4fb;
+    color:#47729e;
 }
 .order-status.delivered{
-    background:#d1ecf1;
-    color:#0c5460;
+    background:#edf7ef;
+    color:#31813d;
 }
-.order-status.cancelled{
-    background:#f8d7da;
-    color:#721c24;
+.order-status.canceled{
+    background:#fff0f0;
+    color:#c13e3e;
 }
 .order-body{
-    padding-top:12px;
+    padding:15px 0;
 }
 .order-items{
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:9px;
 }
 .order-item{
     display:flex;
     justify-content:space-between;
-    font-size:14px;
-    color:#444;
+    align-items:center;
+    gap:20px;
+    color:#4e5650;
+    font-size:13px;
+}
+.order-item span:first-child{
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.order-item span:last-child{
+    color:#68706a;
+    white-space:nowrap;
 }
 .order-total{
-    text-align:right;
-    margin-top:12px;
-    padding-top:12px;
-    border-top:1px solid #eee;
-    font-size:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:14px;
+    border-top:1px solid #e7e9e7;
+    color:#68706a;
+    font-size:13px;
+}
+.order-total strong{
+    color:#277532;
+    font-size:17px;
+    font-weight:700;
+}
+.loading{
+    min-height:300px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:9px;
+    color:#68706a;
+    font-size:14px;
+}
+.spinner{
+    width:15px;
+    height:15px;
+    border:2px solid #dfe5df;
+    border-top-color:#318a3e;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+.empty{
+    max-width:500px;
+    margin:60px auto;
+    padding:42px 35px;
+    box-sizing:border-box;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:16px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.07);
+    animation:pageAppear .35s ease;
+}
+.empty h2{
+    margin:0 0 8px;
+    color:#202522;
+    font-size:22px;
+}
+.empty p{
+    margin:0 0 22px;
+    color:#68706a;
+    font-size:14px;
+}
+.btn-continue{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    min-height:44px;
+    padding:0 22px;
+    border-radius:9px;
+    background:#318a3e;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:background .2s,transform .2s,box-shadow .2s;
+}
+.btn-continue:hover{
+    background:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 6px 16px rgba(49,138,62,.2);
+}
+@keyframes pageAppear{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes cardAppear{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+@media(max-width:600px){
+    .orders-page{
+        padding:30px 15px 45px;
+    }
+    .orders-header{
+        align-items:flex-start;
+    }
+    .orders-header h1{
+        font-size:24px;
+    }
+    .orders-header p{
+        font-size:13px;
+    }
+    .order-card{
+        padding:17px;
+    }
+    .order-header{
+        align-items:flex-start;
+    }
+    .order-item{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:2px;
+    }
+}
+@media(max-width:450px){
+    .orders-page{
+        padding:25px 12px 40px;
+    }
+    .count{
+        padding:5px 9px;
+        font-size:11px;
+    }
+}
+@media(prefers-reduced-motion:reduce){
+    .orders-header,
+    .order-card,
+    .empty{
+        animation:none;
+    }
+    .order-card,
+    .btn-continue{
+        transition:none;
+    }
 }
 </style>

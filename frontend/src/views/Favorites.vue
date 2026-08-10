@@ -1,28 +1,48 @@
 <template>
-    <div class="favorites-container">
-        <div class="favorites-header">
-            <h1>Favorites</h1>
-            <span v-if="favoritesStore.books.length" class="count">
-                {{ favoritesStore.books.length }}
-            </span>
+    <div class="favorites-page">
+        <div v-if="favoritesStore.loading" class="loading">
+            <span class="spinner"></span>
+            Loading...
         </div>
 
-        <div v-if="favoritesStore.loading" class="loading">Loading...</div>
         <div v-else-if="favoritesStore.books.length===0" class="empty">
-            <h2>Favorites are emprty</h2>
-            <p>Add books so you dont lose them</p>
+            <h2>Favorites are empty</h2>
+            <p>Add books so you don't lose them</p>
             <router-link to="/" class="btn-continue">Continue shopping</router-link>
         </div>
-        <div v-else class="books-grid">
-            <div v-for="book in favoritesStore.books":key='book.id' class="book-card">
-                <img v-if="book.coverId" :src="`/covers/${book.coverId}.jpg`" alt="cover" class="cover" @error="(e)=>e.target.style.display='none'">
-                <div class="books-info">
-                    <h3>{{ book.title }}</h3>
-                    <p class="author">{{ book.author }}</p>
-                    <p class="price">{{ book.price }}₽</p>
-                    <div class="actions">
-                        <button class="btn-cart" @click="addToCart(book.id)">In Cart</button>
-                        <button class="btn-remove" @click="removeFromFavorites(book.id)">Remove</button>
+
+        <div v-else class="favorites-content">
+            <div class="favorites-header">
+                <h1>Favorites</h1>
+                <span class="favorites-count">{{ favoritesStore.books.length }} books</span>
+            </div>
+
+            <div class="books-grid">
+                <div v-for="book in favoritesStore.books" :key="book.id" class="book-card">
+                    <div class="cover-wrapper">
+                        <img
+                            v-if="book.coverId"
+                            :src="`/covers/${book.coverId}.jpg`"
+                            alt="cover"
+                            class="cover"
+                            @error="(e)=>e.target.style.display='none'"
+                        >
+                    </div>
+
+                    <div class="book-info">
+                        <h3>{{ book.title }}</h3>
+                        <p class="author">{{ book.author }}</p>
+                        <p class="price">{{ book.price }} ₽</p>
+
+                        <div class="actions">
+                            <button class="btn-cart" @click="addToCart(book.id)">
+                                In Cart
+                            </button>
+
+                            <button class="btn-remove" @click="removeFromFavorites(book.id)">
+                                Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,125 +94,278 @@ onMounted(()=>{
 </script>
 
 <style scoped>
-.favorites-container{
-    max-width:1200px;
-    margin:40px auto;
-    padding:0 20px;
+.favorites-page{
+    min-height:calc(100vh - 80px);
+    padding:45px 20px 60px;
+    background:#f5f6f4;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:#202522;
+}
+.favorites-content{
+    max-width:1050px;
+    margin:0 auto;
 }
 .favorites-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    margin-bottom:28px;
+    animation:pageAppear .35s ease;
 }
 .favorites-header h1{
-    font-size:28px;
     margin:0;
+    color:#202522;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:-.4px;
 }
-.count{
-    background:#f0f0f0;
-    padding:6px 16px;
+.favorites-count{
+    padding:6px 13px;
+    border:1px solid #dfe3df;
     border-radius:20px;
-    font-size:14px;
-    color:#666;
-}
-.loading{
-    text-align:center;
-    padding:60px 0;
-    color:#999;
-}
-.empty{
-    text-align:center;
-    padding:60px 0;
-}
-.empty-icon{
-    font-size:64px;
-    margin-bottom:16px;
-}
-.empty h2{
-    font-size:24px;
-    color:#333;
-    margin-bottom:8px;
-}
-.empty p{
-    color:#999;
-    margin-bottom:24px;
-}
-.btn-continue{
-    display:inline-block;
-    padding:10px 32px;
-    background:#4CAF50;
-    color:white;
-    border-radius:6px;
-    text-decoration:none;
-    transition:0.3s;
-}
-.btn-continue:hover{
-    background:#45a049;
-    transform:scale(1.02);
+    background:#fff;
+    color:#68706a;
+    font-size:13px;
 }
 .books-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:24px;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
 }
 .book-card{
+    overflow:hidden;
     background:#fff;
-    border-radius:12px;
-    border:1px solid #e8e8e8;
-    padding:16px;
-    transition:0.3s;
+    border:1px solid #e1e4e1;
+    border-radius:13px;
+    box-shadow:0 8px 25px rgba(0,0,0,.055);
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+    animation:cardAppear .4s ease both;
+}
+.book-card:nth-child(2){
+    animation-delay:.05s;
+}
+.book-card:nth-child(3){
+    animation-delay:.1s;
+}
+.book-card:nth-child(4){
+    animation-delay:.15s;
 }
 .book-card:hover{
     transform:translateY(-4px);
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    border-color:#d6ddd7;
+    box-shadow:0 12px 28px rgba(0,0,0,.09);
 }
-.book-card .cover{
-    width:100%;
+.cover-wrapper{
     height:250px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+    box-sizing:border-box;
+    background:#f0f2f0;
+}
+.cover{
+    width:auto;
+    max-width:100%;
+    height:100%;
     object-fit:cover;
-    border-radius:8px;
+    border-radius:6px;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+    transition:transform .25s ease;
 }
-.book-card h3{
-    margin:12px 0 4px;
-    font-size:16px;
+.book-card:hover .cover{
+    transform:translateY(-3px);
 }
-.book-card .author{
-    margin:0 0 8px;
-    color:#888;
-    font-size:14px;
+.book-info{
+    padding:17px;
 }
-.book-card .price{
-    font-size:18px;
-    font-weight:600;
-    color:black;
+.book-info h3{
+    margin:0 0 5px;
+    overflow:hidden;
+    color:#202522;
+    font-size:15px;
+    font-weight:650;
+    line-height:1.4;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.author{
+    margin:0;
+    color:#68706a;
+    font-size:12px;
+}
+.price{
+    margin:12px 0 14px;
+    color:#277532;
+    font-size:17px;
+    font-weight:700;
 }
 .actions{
-    display:flex;
-    gap:8px;
-    margin-top:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
 }
-.actions button{
-    padding:8px 16px;
-    border:none;
-    border-radius:6px;
+.btn-cart,
+.btn-remove{
+    min-height:38px;
+    padding:0 8px;
+    border-radius:8px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
     cursor:pointer;
-    transition:0.3s;
+    transition:background .2s,border-color .2s,color .2s,transform .2s;
 }
 .btn-cart{
-    flex:1;
-    background:#2e7d32;
-    color:white;
+    border:1px solid #318a3e;
+    background:#318a3e;
+    color:#fff;
 }
 .btn-cart:hover{
-    background:#1e5a22;
+    background:#277532;
+    border-color:#277532;
+    transform:translateY(-1px);
 }
 .btn-remove{
-    background:#ef4444;
-    color:white;
-    font-size:18px;
+    border:1px solid #d5dad6;
+    background:#fff;
+    color:#68706a;
 }
 .btn-remove:hover{
-    background:#dc2626;
+    border-color:#d65a5a;
+    background:#fff6f6;
+    color:#c13e3e;
+    transform:translateY(-1px);
+}
+.loading{
+    min-height:300px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:9px;
+    color:#68706a;
+    font-size:14px;
+}
+.spinner{
+    width:15px;
+    height:15px;
+    border:2px solid #dfe5df;
+    border-top-color:#318a3e;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+.empty{
+    max-width:500px;
+    margin:70px auto;
+    padding:42px 35px;
+    box-sizing:border-box;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:16px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.07);
+    animation:pageAppear .35s ease;
+}
+.empty h2{
+    margin:0 0 8px;
+    color:#202522;
+    font-size:24px;
+}
+.empty p{
+    margin:0 0 22px;
+    color:#68706a;
+    font-size:14px;
+}
+.btn-continue{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    min-height:44px;
+    padding:0 22px;
+    border-radius:9px;
+    background:#318a3e;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:background .2s,transform .2s,box-shadow .2s;
+}
+.btn-continue:hover{
+    background:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 6px 16px rgba(49,138,62,.2);
+}
+@keyframes pageAppear{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes cardAppear{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+@media(max-width:900px){
+    .books-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+@media(max-width:650px){
+    .favorites-page{
+        padding:30px 15px 45px;
+    }
+    .books-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:14px;
+    }
+    .cover-wrapper{
+        height:220px;
+    }
+}
+@media(max-width:450px){
+    .favorites-page{
+        padding:25px 12px 40px;
+    }
+    .favorites-header h1{
+        font-size:24px;
+    }
+    .favorites-count{
+        font-size:11px;
+    }
+    .books-grid{
+        grid-template-columns:1fr;
+    }
+    .cover-wrapper{
+        height:270px;
+    }
+}
+@media(prefers-reduced-motion:reduce){
+    .favorites-header,
+    .book-card,
+    .empty{
+        animation:none;
+    }
+    .book-card,
+    .cover,
+    .btn-cart,
+    .btn-remove,
+    .btn-continue{
+        transition:none;
+    }
 }
 </style>
