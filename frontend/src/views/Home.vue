@@ -13,6 +13,25 @@
         <button @click="findBooks">Find</button>
     </div>
 
+    <div class="filters">
+        <select v-model="sort" @change="applyFilters">
+            <option value="newest">By novelty</option>
+            <option value="price_asc">Price: cheap at first</option>
+            <option value="price_desc">Price: expensive at first</option>
+            <option value="rating_desc">By rating</option>
+        </select>
+
+        <select v-model="categoryId" @change="applyFilters">
+            <option value="">All categories</option>
+            <option v-for="cat in categories":key="cat.id" :value="cat.id">{{ cat.name }}</option>
+        </select>
+
+        <div class="price-filter">
+            <input type="number" v-model="minPrice" @input="applyFilters" placeholder="from ₽">
+            <input type="number" v-model="maxPrice" @input="applyFilters" placeholder="before ₽">
+        </div>
+    </div>
+
     <div v-if="loading" class="loading">Loading...</div>
 
     <div v-else-if="books.length===0" class="empty">
@@ -88,7 +107,12 @@ const cartStore=useCartStore()
 const favoritesStore=useFavoritesStore()
 
 const search=ref('')
+const sort=ref('newest')
+const categoryId=ref('')
+const minPrice=ref('')
+const maxPrice=ref('')
 const books=ref([])
+const categories=ref([])
 const loading=ref(false)
 const pagination=ref({page:1,total:0,pages:1,limit:10})
 
@@ -101,12 +125,23 @@ const handleImageError=(event,book)=>{
     else img.style.display = 'none'
 }
 
+const fetchCategories=async()=>{
+    try{
+        response=await api.get('/api/categories')
+        categories.value=response.data
+    }catch(error){console.error(error)}
+}
+
 const fetchBooks=async()=>{
     loading.value=true
     try{
         const response=await api.get('api/books',{
             params:{
                 search:search.value||undefined,
+                sort:sort.value||undefined,
+                categoryId:categoryId.value||undefined,
+                minPrice:minPrice.value||undefined,
+                maxPrice:maxPrice.value||undefined,
                 page:pagination.value.page,
                 limit:20
             }
@@ -161,7 +196,15 @@ const addToFavorites=async(bookId)=>{
     }
 }
 
-onMounted(fetchBooks)
+const applyFilters=()=>{
+    pagination.value.page=1
+    fetchBooks()
+}
+
+onMounted(async()=>{
+    fetchCategories()
+    fetchBooks()
+})
 </script>
 
 <style scoped>
