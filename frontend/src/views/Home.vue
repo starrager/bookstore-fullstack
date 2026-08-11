@@ -208,6 +208,57 @@ onMounted(async()=>{
 </script>
 
 <style scoped>
+.filters{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:30px;
+    padding:14px;
+    border:1px solid #e1e4e1;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.035);
+}
+.filters select,
+.price-filter input{
+    height:42px;
+    box-sizing:border-box;
+    padding:0 13px;
+    border:1px solid #d9dedb;
+    border-radius:8px;
+    outline:none;
+    background:#fff;
+    color:#3d443f;
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.filters select{
+    min-width:175px;
+}
+.filters select:focus,
+.price-filter input:focus{
+    border-color:#318a3e;
+    box-shadow:0 0 0 3px rgba(49,138,62,.1);
+}
+.filters select:hover,
+.price-filter input:hover{
+    border-color:#bfc9c1;
+}
+.price-filter{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-left:auto;
+}
+.price-filter input{
+    width:115px;
+    cursor:text;
+}
+.price-filter input::placeholder{
+    color:#969d98;
+}
 .shop-page{
     width:100%;
     max-width:1150px;

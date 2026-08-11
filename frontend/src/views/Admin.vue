@@ -13,6 +13,23 @@
                 </button>
             </div>
 
+            <div class="admin-filters">
+                <input type="text" v-model="search" @input="applyFilters" placeholder="search by titles" class="filter-input">
+
+                <select v-model="sort" @change="applyFilters" class="filter-select">
+                    <option value="newest">By novelty</option>
+                    <option value="price_asc">Price ↑</option>
+                    <option value="price_desc">Price ↓</option>
+                </select>
+
+                <select v-model="categoryId" @change="applyFilters" class="filter-select">
+                    <option value="">All categories</option>
+                    <option v-for="cat in categories":key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                </select>
+
+                <button class="btn-reset" @click="resetFilters">Reset</button>
+            </div>
+
             <div v-if="loading" class="loading">
                 <span class="spinner"></span>
                 Loading...
@@ -319,6 +336,9 @@ const loading=ref(false)
 const showCreateModal=ref(false)
 const showEditModal=ref(false)
 const dragStart=ref(false)
+const search=ref('')
+const sort=ref('newest')
+const categoryId=ref('')
 
 const createForm=ref({
     title:'',
@@ -342,7 +362,13 @@ const editForm=ref({
 const fetchBooks=async()=>{
     loading.value=true
     try{
-        const response=await api.get('/api/books?limit=1000')
+        const response=await api.get('/api/books?limit=1000',{
+            params:{
+                search:search.value||undefined,
+                sort:sort.value||undefined,
+                categoryId:categoryId.value||undefined
+            }
+        })
         books.value=response.data.books||response.data||[]
     }catch(error){toast.error('Error loading books')}
     finally{loading.value=false}
@@ -426,6 +452,17 @@ const deleteBook=async(id)=>{
     }catch(error){toast.error(error.response?.data?.error||'Deletion error')}
 }
 
+const applyFilters=()=>{
+    fetchBooks()
+}
+
+const resetFilters=()=>{
+    search.value=''
+    sort.value='newest'
+    categoryId.value=''
+    fetchBooks()
+}
+
 onMounted(async()=>{
     await fetchCategories()
     await fetchBooks()
@@ -433,6 +470,102 @@ onMounted(async()=>{
 </script>
 
 <style scoped>
+.admin-filters{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:25px;
+    padding:14px;
+    border:1px solid #e1e4e1;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 4px 12px rgba(0,0,0,.035);
+}
+.filter-input,
+.filter-select{
+    height:42px;
+    box-sizing:border-box;
+    padding:0 13px;
+    border:1px solid #d9dedb;
+    border-radius:8px;
+    outline:none;
+    background:#fff;
+    color:#3d443f;
+    font-family:inherit;
+    font-size:13px;
+    transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.filter-input{
+    flex:1;
+    min-width:200px;
+}
+.filter-select{
+    min-width:165px;
+    cursor:pointer;
+}
+.filter-input:focus,
+.filter-select:focus{
+    border-color:#318a3e;
+    box-shadow:0 0 0 3px rgba(49,138,62,.1);
+}
+.filter-input:hover,
+.filter-select:hover{
+    border-color:#bfc9c1;
+}
+.filter-input::placeholder{
+    color:#969d98;
+}
+.btn-reset{
+    height:42px;
+    padding:0 17px;
+    border:1px solid #d9dedb;
+    border-radius:8px;
+    background:#f7f8f7;
+    color:#59615b;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.btn-reset:hover{
+    border-color:#c5cdc6;
+    background:#eef1ee;
+    color:#303731;
+    transform:translateY(-1px);
+}
+.btn-reset:active{
+    transform:scale(.97);
+}
+@media(max-width:750px){
+    .admin-filters{
+        flex-wrap:wrap;
+    }
+    .filter-input{
+        width:100%;
+        min-width:0;
+        flex:none;
+    }
+    .filter-select{
+        flex:1;
+        min-width:150px;
+    }
+    .btn-reset{
+        padding:0 20px;
+    }
+}
+@media(max-width:500px){
+    .admin-filters{
+        flex-direction:column;
+        align-items:stretch;
+        padding:10px;
+    }
+    .filter-input,
+    .filter-select,
+    .btn-reset{
+        width:100%;
+    }
+}
 .admin-page{
     min-height:calc(100vh - 80px);
     padding:45px 20px 60px;
