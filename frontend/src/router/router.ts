@@ -9,6 +9,7 @@ import Checkout from "@/views/Checkout.vue";
 import Order from '@/views/Order.vue'
 import Admin from "@/views/Admin.vue";
 import Front from "@/views/Front.vue";
+import Profile from "@/views/Profile.vue";
 
 const routes=[
     {
@@ -51,6 +52,11 @@ const routes=[
     {
         path:'/books',
         component:Home
+    },
+    {
+        path:'/profile',
+        component:Profile,
+        meta:{requiredAuth:true}
     }
 ]
 

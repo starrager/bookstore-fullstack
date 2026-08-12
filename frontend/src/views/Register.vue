@@ -159,7 +159,9 @@ import {useToast} from '@erag/vue-toastification'
 
 const toast=useToast()
 const router=useRouter()
+import { useAuthStore } from '@/stores/auth'
 
+const authStore=useAuthStore()
 const name=ref('')
 const email=ref('')
 const password1=ref('')
@@ -250,6 +252,7 @@ const register=async()=>{
         if(response.data.token){
             localStorage.setItem('token',response.data.token)
             localStorage.setItem('user',JSON.stringify(response.data.user))
+            authStore.checkAuth()
         }
 
         toast.success('Registration is successful')
@@ -271,11 +274,10 @@ const register=async()=>{
 
 <style scoped>
 .auth-page{
-    min-height:calc(100vh  - 80px);
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:45px 20px;
+    padding:35px 20px;
     background:#f5f6f4;
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }

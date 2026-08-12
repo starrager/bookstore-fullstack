@@ -77,7 +77,9 @@ import axios from 'axios'
 import {useRouter} from 'vue-router'
 import {useCartStore} from '@/stores/cart'
 import {useToast} from '@erag/vue-toastification'
+import { useAuthStore } from '@/stores/auth'
 
+const authStore=useAuthStore()
 const toast=useToast()
 const cartStore=useCartStore()
 const router=useRouter()
@@ -102,6 +104,7 @@ const login=async()=>{
 
         localStorage.setItem('token',response.data.token)
         localStorage.setItem('user',JSON.stringify(response.data.user))
+        authStore.checkAuth()
 
         await cartStore.getCart()
 
@@ -122,7 +125,7 @@ const login=async()=>{
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:50px 20px;
+    padding:0px 20px;
     background:#f5f6f4;
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }

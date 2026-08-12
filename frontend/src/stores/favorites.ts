@@ -2,8 +2,6 @@ import {defineStore} from 'pinia'
 import {ref} from 'vue'
 import api from '../api/api'
 
-
-
 export const useFavoritesStore=defineStore('favorites',()=>{
     const books=ref([])
     const loading=ref(false)

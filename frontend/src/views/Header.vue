@@ -7,7 +7,7 @@
             </button>
 
             <nav class="navigation">
-                <button class="nav-button" @click="router.push('/')">
+                <button class="nav-button" @click="router.push('/books')">
                     Books
                 </button>
 
@@ -26,6 +26,11 @@
                 <button v-if="isAdmin" class="nav-button admin-button" @click="router.push('/admin/books')">
                     Admin
                 </button>
+
+                <button v-if="isAuthenticated" class="nav-button" @click="router.push('/profile')">
+                    Profile
+                </button>
+
             </nav>
 
             <button v-if="isAuthenticated" class="logout-button" @click="logout">
@@ -43,12 +48,14 @@
 import {useRouter} from 'vue-router'
 import {useToast} from '@erag/vue-toastification'
 import {ref,onMounted} from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import {storeToRefs} from 'pinia'
 
 const toast=useToast()
 const router=useRouter()
+const authStore=useAuthStore()
 const front=ref(false)
-const isAdmin=ref(false)
-const isAuthenticated=ref(false)
+const {isAuthenticated,isAdmin}=storeToRefs(authStore)
 
 const checkAuth=()=>{
     const token=localStorage.getItem('token')
@@ -64,13 +71,8 @@ const checkAuth=()=>{
 
 const logout=async()=>{
     if(confirm('Do you really want to log out of your account?')){
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-
-        isAuthenticated.value=false
-        isAdmin.value=false
-        front.value=false
-
+        authStore.logout()
+        toast.success('Left success')
         router.push('/login')
     }else{
         toast.error('Error, please repeat later')
@@ -93,10 +95,10 @@ onMounted(checkAuth)
     align-items:center;
     width:100%;
     max-width:1150px;
-    min-height:76px;
+    min-height:70px;
     box-sizing:border-box;
-    margin:20px auto;
-    padding:10px 18px;
+    margin:15px auto;
+    padding:7px 18px;
     overflow:hidden;
     border:1px solid #dfe5df;
     border-radius:16px;
