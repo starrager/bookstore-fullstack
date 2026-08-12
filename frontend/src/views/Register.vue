@@ -259,7 +259,7 @@ const register=async()=>{
         password1.value=''
         password2.value=''
 
-        router.push('/')
+        router.push('/books')
     }catch(error){
         console.error(error)
         toast.error(error.response?.data?.error||'Registration error')

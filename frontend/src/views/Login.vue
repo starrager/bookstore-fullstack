@@ -106,7 +106,7 @@ const login=async()=>{
         await cartStore.getCart()
 
         toast.success('Authorization successful')
-        router.push('/')
+        router.push('/books')
     }catch(error){
         console.error(error)
         toast.error(error.response?.data?.error||'Authorization error')

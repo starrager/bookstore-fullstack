@@ -8,11 +8,12 @@ import Orders from "@/views/Orders.vue";
 import Checkout from "@/views/Checkout.vue";
 import Order from '@/views/Order.vue'
 import Admin from "@/views/Admin.vue";
+import Front from "@/views/Front.vue";
 
 const routes=[
     {
         path:'/',
-        component:Home
+        component:Front
     },
     {
         path:'/register',
@@ -46,6 +47,10 @@ const routes=[
         path:'/admin/books',
         component:Admin,
         meta:{requiresAuth:true,requiresAdmin:true}
+    },
+    {
+        path:'/books',
+        component:Home
     }
 ]
 

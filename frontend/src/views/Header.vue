@@ -28,8 +28,12 @@
                 </button>
             </nav>
 
-            <button class="logout-button" @click="logout">
+            <button v-if="isAuthenticated" class="logout-button" @click="logout">
                 Exit
+            </button>
+
+            <button v-else class="register" @click="router.push('/register')">
+                Register
             </button>
         </div>
     </header>
@@ -42,6 +46,7 @@ import {ref,onMounted} from 'vue'
 
 const toast=useToast()
 const router=useRouter()
+const front=ref(false)
 const isAdmin=ref(false)
 const isAuthenticated=ref(false)
 
@@ -54,7 +59,7 @@ const checkAuth=()=>{
     if(token&&userData){
         const user=JSON.parse(userData)
         isAdmin.value=user.role==='admin'
-    }
+    }else isAdmin.value=false
 }
 
 const logout=async()=>{
@@ -64,6 +69,7 @@ const logout=async()=>{
 
         isAuthenticated.value=false
         isAdmin.value=false
+        front.value=false
 
         router.push('/login')
     }else{
@@ -226,6 +232,28 @@ onMounted(checkAuth)
 .logout-button:active{
     transform:scale(.97);
 }
+.register{
+    margin-left:12px;
+    padding:11px 17px;
+    border:1px solid #ead6d6;
+    border-radius:9px;
+    background:#fffafa;
+    color:rgb(17, 143, 17);
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.register:hover{
+    border-color:#e4bcbc;
+    background:#fff1f1;
+    color:green;
+    transform:translateY(-1px);
+}
+.register:active{
+    transform:scale(.97);
+}
 @media(max-width:900px){
     .header-inner{
         max-width:100%;
@@ -265,6 +293,11 @@ onMounted(checkAuth)
         font-size:13px;
     }
     .logout-button{
+        margin-left:6px;
+        padding:10px 12px;
+        font-size:13px;
+    }
+    .register-button{
         margin-left:6px;
         padding:10px 12px;
         font-size:13px;
