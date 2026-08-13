@@ -1,0 +1,4 @@
+{"level":"info","message":{"ip":"::1","method":"GET","type":"request","url":"/api/users/me"},"timestamp":"2026-08-13 12:46:00"}
+{"level":"info","message":{"duration":"349ms","method":"GET","status":304,"type":"response","url":"/me"},"timestamp":"2026-08-13 12:46:01"}
+{"level":"info","message":{"ip":"::ffff:127.0.0.1","method":"POST","type":"request","url":"/api/auth/login"},"timestamp":"2026-08-13 12:46:32"}
+{"level":"info","message":{"duration":"77ms","method":"POST","status":400,"type":"response","url":"/login"},"timestamp":"2026-08-13 12:46:32"}

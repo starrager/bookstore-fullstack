@@ -69,75 +69,74 @@ import { ref, onMounted } from 'vue'
 import api from '../api/api'
 import { useToast } from '@erag/vue-toastification'
 
-const toast = useToast()
-const loading = ref(true)
+const toast=useToast()
+const loading=ref(true)
 
-const form = ref({
-    name: '',
-    email: '',
-    role: ''
+const form=ref({
+    name:'',
+    email:'',
+    role:''
 })
 
-const passwordForm = ref({
+const passwordForm=ref({
     currentPassword: '',
     newPassword: ''
 })
 
-const fetchProfile = async () => {
-    loading.value = true
-    try {
-        const response = await api.get('/api/users/me')
-        form.value = {
-            name: response.data.name || '',
-            email: response.data.email || '',
-            role: response.data.role || ''
+const fetchProfile=async()=>{
+    loading.value=true
+    try{
+        const response=await api.get('/api/users/me')
+        form.value={
+            name:response.data.name||'',
+            email:response.data.email||'',
+            role:response.data.role||''
         }
-    } catch (error) {
+    }catch(error){
         toast.error('Error loading profile')
         console.error(error)
-    } finally {
-        loading.value = false
+    }finally{
+        loading.value=false
     }
 }
 
-const updateProfile = async () => {
-    try {
+const updateProfile=async()=>{
+    try{
         await api.put('/api/users/me', {
             name: form.value.name,
             email: form.value.email
         })
         toast.success('Profile updated')
 
-        const userData = localStorage.getItem('user')
-        if (userData) {
-            const user = JSON.parse(userData)
-            user.name = form.value.name
-            user.email = form.value.email
-            localStorage.setItem('user', JSON.stringify(user))
+        const userData=localStorage.getItem('user')
+        if(userData){
+            const user=JSON.parse(userData)
+            user.name=form.value.name
+            user.email=form.value.email
+            localStorage.setItem('user',JSON.stringify(user))
         }
-    } catch (error) {
-        toast.error(error.response?.data?.error || 'Error updating profile')
+    }catch(error){
+        toast.error(error.response?.data?.error||'Error updating profile')
         console.error(error)
     }
 }
 
-const updatePassword = async () => {
-    try {
-        console.log('📤 Отправляем пароли:', passwordForm.value)
-        if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword) {
+const updatePassword=async()=>{
+    try{
+        if(!passwordForm.value.currentPassword||!passwordForm.value.newPassword) {
             toast.warning('Please fill in all fields')
             return
         }
-        await api.put('/api/users/me/password', {
-            currentPassword: passwordForm.value.currentPassword,
-            newPassword: passwordForm.value.newPassword
+        await api.put('/api/users/me/password',{
+            currentPassword:passwordForm.value.currentPassword,
+            newPassword:passwordForm.value.newPassword
         })
         toast.success('Password changed')
-        passwordForm.value.currentPassword = ''
-        passwordForm.value.newPassword = ''
-    } catch (error) {
-        console.error('❌ Ошибка:', error.response?.data)
-        toast.error(error.response?.data?.error || 'Error changing password')
+        passwordForm.value.currentPassword=''
+        passwordForm.value.newPassword=''
+    } catch(error){
+        console.error('error:',error.response?.data)
+        toast.error(error.response?.data?.error||'Error changing password')
         console.error(error)
     }
 }
@@ -152,7 +151,7 @@ onMounted(fetchProfile)
     justify-content:center;
     align-items:flex-start;
     min-height:80vh;
-    padding:55px 20px 80px;
+    padding:35px 20px 80px;
     box-sizing:border-box;
     overflow:hidden;
 }

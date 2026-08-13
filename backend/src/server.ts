@@ -1,6 +1,8 @@
-import express,{Request,Response} from 'express'
+import express,{NextFunction, Request,Response} from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import logger from './logger'
+import { logRequest } from './middleware/logger.middleware'
 
 const app=express()
 const PORT=process.env.PORT||5178
@@ -15,6 +17,7 @@ import userRoutes from './routes/users.routes'
 
 app.use(cors())
 app.use(express.json())
+app.use(logRequest)
 app.use('/api/auth',authRoutes)
 app.use('/api/books',bookRouters)
 app.use('/api/categories',categoriesRoutes)
@@ -23,6 +26,21 @@ app.use('/api/orders',ordersRoutes)
 app.use('/api/reviews',reviewsRoutes)
 app.use('/api/favorites',favoritesRoutes)
 app.use('/api/users',userRoutes)
+
+app.use((err:any,req:Request,res:Response,next:NextFunction)=>{
+    logger.error({
+        message:err.message||'Unknown error',
+        stack:err.stack,
+        url:req.url,
+        method:req.method,
+        body:req.body,
+        userId:req.userId,
+        ip:req.ip,
+    })
+    res.status(err.status||500).json({
+        error:err.message||'Internal server error'
+    })
+})
 
 //get запросы
 app.get('/',(req:Request,res:Response)=>{

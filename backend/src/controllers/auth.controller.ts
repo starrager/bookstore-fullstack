@@ -1,7 +1,8 @@
-import { Request,Response } from "express";
+import { NextFunction, Request,Response } from "express";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import prisma from '../prisma'
+import logger from '../logger'
 
 export const register=async(req:Request,res:Response)=>{
     try{
@@ -47,8 +48,8 @@ export const register=async(req:Request,res:Response)=>{
         res.status(500).json({error:'ошибка сервера'})
     }
 }
-//comment
-export const login=async(req:Request,res:Response)=>{
+
+export const login=async(req:Request,res:Response,next:NextFunction)=>{
     try{
         const {email,password}=req.body
 
@@ -78,8 +79,11 @@ export const login=async(req:Request,res:Response)=>{
                 role:user.role
             }
         })
+
+        logger.info(`User ${user.email} logged`)
     }catch(error){
-        console.error(error)
+        logger.error(`Login error ${(error as Error).message}`)
+        next(error)
         res.status(500).json({error:'ошибка сервера'})
     }
 }
