@@ -130,6 +130,7 @@ const login=async()=>{
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 .auth-card{
+    overflow:hidden;
     width:100%;
     max-width:400px;
     box-sizing:border-box;

@@ -86,8 +86,9 @@ onMounted(checkAuth)
 .header{
     width:100%;
     box-sizing:border-box;
-    padding:0 20px;
+    padding:0 10px;
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    flex-shrink:0;
 }
 .header-inner{
     position:relative;
@@ -95,10 +96,10 @@ onMounted(checkAuth)
     align-items:center;
     width:100%;
     max-width:1150px;
-    min-height:70px;
+    min-height:60px;
     box-sizing:border-box;
-    margin:15px auto;
-    padding:7px 18px;
+    margin:10px auto;
+    padding:6px 14px;
     overflow:hidden;
     border:1px solid #dfe5df;
     border-radius:16px;
