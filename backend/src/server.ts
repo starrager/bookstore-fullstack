@@ -16,7 +16,10 @@ import favoritesRoutes from './routes/favorites.routes'
 import userRoutes from './routes/users.routes'
 import adminRoutes from './routes/admin.routes'
 
-app.use(cors())
+app.use(cors({
+    origin:'*',
+    credentials:true
+}))
 app.use(express.json())
 app.use(logRequest)
 app.use('/api/auth',authRoutes)
