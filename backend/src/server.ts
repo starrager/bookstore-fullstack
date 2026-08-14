@@ -14,6 +14,7 @@ import ordersRoutes from './routes/orders.routes'
 import reviewsRoutes from './routes/reviews.routes'
 import favoritesRoutes from './routes/favorites.routes'
 import userRoutes from './routes/users.routes'
+import adminRoutes from './routes/admin.routes'
 
 app.use(cors())
 app.use(express.json())
@@ -26,6 +27,7 @@ app.use('/api/orders',ordersRoutes)
 app.use('/api/reviews',reviewsRoutes)
 app.use('/api/favorites',favoritesRoutes)
 app.use('/api/users',userRoutes)
+app.use('/api/admin',adminRoutes)
 
 app.use((err:any,req:Request,res:Response,next:NextFunction)=>{
     logger.error({
