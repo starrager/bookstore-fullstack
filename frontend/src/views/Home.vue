@@ -55,8 +55,8 @@
                     <div class="book-bottom">
                         <span class="price">{{ book.price }} ₽</span>
                         <div class="actions">
-                            <button class="cart-button" @click="addToCart(book.id)">In Cart</button>
-                            <button class="favorite-button" @click="addToFavorites(book.id)">♡</button>
+                            <button class="cart-button" @click.stop="addToCart(book.id)">In Cart</button>
+                            <button class="favorite-button" @click.stop="addToFavorites(book.id)">♡</button>
                         </div>
                     </div>
                 </div>
