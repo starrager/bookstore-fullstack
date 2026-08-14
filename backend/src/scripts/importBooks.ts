@@ -14,7 +14,7 @@ const normalizeCategory=(subjects:string[]):string=>{
     if(!subjects||subjects.length===0)return 'Other'
 
     const raw=subjects[0]
-    const clean=raw.replace(/fiction/gi,'').replace(/novel/gi,'').replace(/story/gi,'').trim()
+    const clean = raw?.replace(/fiction/gi,'')?.replace(/novel/gi,'')?.replace(/story/gi,'')?.trim() ?? ''
 
     if(!clean)return 'fiction'
     return clean.charAt(0).toUpperCase()+clean.slice(1)
