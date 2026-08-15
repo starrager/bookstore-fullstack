@@ -52,7 +52,11 @@ app.get('/',(req:Request,res:Response)=>{
     
 })
 
+export {app}
+
 //запуск сервера
-app.listen(PORT,()=>{
-    console.log(`THE SERVER IS RUNNING ON http://localhost:${PORT}`)
-})
+if(process.env.NODE_ENV!=='test'){
+    app.listen(PORT,()=>{
+        console.log(`THE SERVER IS RUNNING ON http://localhost:${PORT}`)
+    })
+}
