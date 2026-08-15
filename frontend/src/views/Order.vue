@@ -64,10 +64,113 @@
                 <div class="order-total">
                     <span>Total:</span>
                     <strong>{{ order.total }} ₽</strong>
+                    <button type="button" class="pay-btn" @click="openPayment">Pay
+                        <span>→</span>
+                    </button>
                 </div>
+                <div
+    v-if="paymentModal"
+    class="modal-overlay"
+    @click.self="closePayment"
+>
+    <div class="payment-modal">
+        <button
+            type="button"
+            class="modal-close"
+            @click="closePayment"
+            aria-label="Close"
+        >
+            ×
+        </button>
+
+        <div class="payment-header">
+            <div class="payment-icon">
+                ₽
+            </div>
+
+            <h2>Payment</h2>
+            <p>Complete your payment for order #{{ order.id }}</p>
+        </div>
+
+        <div class="payment-amount">
+            <span>Total</span>
+            <strong>{{ order.total }} ₽</strong>
+        </div>
+
+        <form @submit.prevent="processPayment">
+
+            <div class="form-group">
+                <label>Card number</label>
+
+                <input
+                    v-model="cardNumber"
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="19"
+                    placeholder="0000 0000 0000 0000"
+                    autocomplete="cc-number"
+                    @input="formatCardNumber"
+                >
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label>Expiry date</label>
+
+                    <input
+                        v-model="expiry"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="5"
+                        placeholder="MM/YY"
+                        autocomplete="cc-exp"
+                        @input="formatExpiry"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>CVC</label>
+
+                    <input
+                        v-model="cvc"
+                        type="password"
+                        inputmode="numeric"
+                        maxlength="3"
+                        placeholder="•••"
+                        autocomplete="cc-csc"
+                    >
+                </div>
+
+            </div>
+
+            <div class="secure-payment">
+                <span>🔒</span>
+                <span>Secure payment</span>
+            </div>
+
+            <button
+                type="submit"
+                class="confirm-payment"
+                :disabled="processing"
+            >
+                <span v-if="!processing">
+                    Pay {{ order.total }} ₽
+                </span>
+
+                <span v-else class="payment-loading">
+                    <span class="small-spinner"></span>
+                    Processing...
+                </span>
+            </button>
+
+        </form>
+    </div>
+</div>
             </div>
         </div>
     </div>
+    
 </template>
 
 <script setup>
@@ -79,6 +182,66 @@ const router=useRouter()
 const route=useRoute()
 const order=ref(null)
 const loading=ref(false)
+
+const paymentModal = ref(false)
+const processing = ref(false)
+
+const cardNumber = ref('')
+const expiry = ref('')
+const cvc = ref('')
+
+const openPayment=()=>{
+    paymentModal.value=true
+    document.body.style.overflow='hidden'
+}
+
+const closePayment=()=>{
+    if(processing.value)return
+
+    paymentModal.value=false
+    document.body.style.overflow=''
+}
+
+const formatCardNumber=()=>{
+    let value=cardNumber.value
+        .replace(/\D/g,'')
+        .slice(0, 16)
+
+    cardNumber.value=value.replace(
+        /(.{4})/g,
+        '$1 '
+    ).trim()
+}
+
+const formatExpiry=()=>{
+    let value=expiry.value
+        .replace(/\D/g,'')
+        .slice(0, 4)
+    if(value.length >= 3){
+        value=`${value.slice(0, 2)}/${value.slice(2)}`
+    }
+    expiry.value=value
+}
+
+const processPayment=async()=>{
+    if(
+        cardNumber.value.replace(/\s/g, '').length!==16||
+        expiry.value.length!==5||
+        cvc.value.length!==3
+    ){
+        return
+    }
+
+    processing.value=true
+    await new Promise(resolve=>setTimeout(resolve, 1500))
+    order.value.status='paid'
+    processing.value=false
+    paymentModal.value=false
+    document.body.style.overflow=''
+    cardNumber.value=''
+    expiry.value=''
+    cvc.value=''
+}
 
 const formatDate=(dateString)=>{
     const date=new Date(dateString)
@@ -118,6 +281,58 @@ onMounted(fetchOrder)
 </script>
 
 <style scoped>
+.pay-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    min-width:110px;
+    height:42px;
+    margin-left:auto;
+    padding:0 17px;
+    border:1px solid #318a3e;
+    border-radius:9px;
+    background:#318a3e;
+    color:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    line-height:1;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(49,138,62,.14);
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.pay-btn span{
+    font-size:17px;
+    line-height:1;
+    transition:transform .2s ease;
+}
+
+.pay-btn:hover{
+    background:#277532;
+    border-color:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(49,138,62,.2);
+}
+
+.pay-btn:hover span{
+    transform:translateX(3px);
+}
+
+.pay-btn:active{
+    transform:translateY(0);
+    box-shadow:0 3px 7px rgba(49,138,62,.15);
+}
+
+.pay-btn:focus-visible{
+    outline:3px solid rgba(49,138,62,.2);
+    outline-offset:3px;
+}
 .order-detail-page{
     min-height:calc(100vh - 80px);
     padding:45px 20px 60px;
@@ -281,14 +496,16 @@ onMounted(fetchOrder)
 }
 .order-total{
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end;
     align-items:center;
+    gap:20px;
     margin-top:7px;
     padding-top:20px;
     border-top:1px solid #dfe3df;
     color:#202522;
     font-size:15px;
 }
+
 .order-total strong{
     color:#202522;
     font-size:21px;
@@ -420,6 +637,215 @@ onMounted(fetchOrder)
     .cover,
     .btn-continue{
         transition:none;
+    }
+}
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:rgba(25,30,27,.48);
+    backdrop-filter:blur(5px);
+    animation:modalOverlayAppear .2s ease;
+}
+.payment-modal{
+    position:relative;
+    width:100%;
+    max-width:430px;
+    padding:30px;
+    background:#fff;
+    border:1px solid #e1e4e1;
+    border-radius:18px;
+    box-shadow:0 25px 70px rgba(0,0,0,.18);
+    animation:modalAppear .25s ease;
+}
+.modal-close{
+    position:absolute;
+    top:16px;
+    right:17px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:32px;
+    height:32px;
+    padding:0;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:#68706a;
+    font-family:inherit;
+    font-size:25px;
+    font-weight:300;
+    line-height:1;
+    cursor:pointer;
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+.modal-close:hover{
+    background:#f1f3f1;
+    color:#202522;
+}
+.payment-header{
+    text-align:center;
+    margin-bottom:24px;
+}
+.payment-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:48px;
+    height:48px;
+    margin:0 auto 13px;
+    border-radius:12px;
+    background:#edf7ef;
+    color:#318a3e;
+    font-size:19px;
+    font-weight:700;
+}
+.payment-header h2{
+    margin:0 0 5px;
+    color:#202522;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-.3px;
+}
+.payment-header p{
+    margin:0;
+    color:#68706a;
+    font-size:12px;
+}
+.payment-amount{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+    padding:15px 16px;
+    border:1px solid #e1e4e1;
+    border-radius:11px;
+    background:#f7f8f7;
+}
+.payment-amount span{
+    color:#68706a;
+    font-size:13px;
+}
+.payment-amount strong{
+    color:#202522;
+    font-size:18px;
+    font-weight:700;
+}
+.form-group{
+    margin-bottom:16px;
+}
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.form-group label{
+    display:block;
+    margin-bottom:7px;
+    color:#4e5650;
+    font-size:12px;
+    font-weight:600;
+}
+.form-group input{
+    width:100%;
+    height:43px;
+    box-sizing:border-box;
+    padding:0 12px;
+    border:1px solid #dfe3df;
+    border-radius:9px;
+    outline:none;
+    background:#fff;
+    color:#202522;
+    font-family:inherit;
+    font-size:13px;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+.form-group input::placeholder{
+    color:#a1a7a2;
+}
+.form-group input:focus{
+    border-color:#318a3e;
+    box-shadow:0 0 0 3px rgba(49,138,62,.1);
+}
+.secure-payment{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:3px 0 18px;
+    color:#7a817c;
+    font-size:11px;
+}
+.confirm-payment{
+    width:100%;
+    height:45px;
+    border:1px solid #318a3e;
+    border-radius:9px;
+    background:#318a3e;
+    color:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(49,138,62,.14);
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+.confirm-payment:hover:not(:disabled){
+    background:#277532;
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(49,138,62,.2);
+}
+
+.confirm-payment:active:not(:disabled){
+    transform:translateY(0);
+}
+.confirm-payment:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+}
+.payment-loading{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+.small-spinner{
+    width:13px;
+    height:13px;
+    border:2px solid rgba(255,255,255,.35);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+@keyframes modalOverlayAppear{
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+@keyframes modalAppear{
+    from{
+        opacity:0;
+        transform:translateY(12px) scale(.98);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
     }
 }
 </style>

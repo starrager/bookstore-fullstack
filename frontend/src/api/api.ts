@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api=axios.create({
-    baseURL:'https://bookstore-fullstack-6vy8.onrender.com',
+    baseURL:'http://localhost:5178',
     headers:{
         'Content-Type':'application/json'
     }
