@@ -17,8 +17,12 @@ import userRoutes from './routes/users.routes'
 import adminRoutes from './routes/admin.routes'
 
 app.use(cors({
-    origin:'*',
-    credentials:true
+    origin: [
+        'https://bookstore-frontend-nine-rose.vercel.app',
+        'https://bookstore-frontend-cvsbahzul-kings17.vercel.app',
+        'http://localhost:5173'
+    ],
+    credentials: true
 }))
 app.use(express.json())
 app.use(logRequest)
