@@ -107,7 +107,7 @@ const placeOrder=async()=>{
             router.push('login')
             return
         }
-        await api.post('/api/orders',{
+        await api.post('/orders',{
             address:address.value,
             phone:phone.value
         })

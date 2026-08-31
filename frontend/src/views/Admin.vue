@@ -362,7 +362,7 @@ const editForm=ref({
 const fetchBooks=async()=>{
     loading.value=true
     try{
-        const response=await api.get('/api/books?limit=1000',{
+        const response=await api.get('/books?limit=1000',{
             params:{
                 search:search.value||undefined,
                 sort:sort.value||undefined,
@@ -377,7 +377,7 @@ const fetchBooks=async()=>{
 const fetchCategories=async()=>{
     loading.value=true
     try{
-        const response=await api.get('/api/categories')
+        const response=await api.get('/categories')
         categories.value=response.data
 
     }catch(error){toast.error('Error loading categories')}
@@ -421,7 +421,7 @@ const createBook=async()=>{
             stock:Number(createForm.value.stock),
             categoryId:createForm.value.categoryId?Number(createForm.value.categoryId):undefined
         }
-        await api.post('/api/books',data)
+        await api.post('/books',data)
         toast.success('The book was created')
         closeModal()
         await fetchBooks()
@@ -436,7 +436,7 @@ const updateBook=async()=>{
             stock:Number(editForm.value.stock),
             categoryId:editForm.value.categoryId?Number(editForm.value.categoryId):undefined
         }
-        await api.put(`/api/books/${editForm.value.id}`,data)
+        await api.put(`/books/${editForm.value.id}`,data)
         toast.success('The book has been updated')
         closeModal()
         await fetchBooks()
@@ -446,7 +446,7 @@ const updateBook=async()=>{
 const deleteBook=async(id)=>{
     if(!confirm('Remove book?'))return
     try{
-        await api.delete(`/api/books/${id}`)
+        await api.delete(`/books/${id}`)
         toast.success('The book has been removed')
         await fetchBooks()
     }catch(error){toast.error(error.response?.data?.error||'Deletion error')}

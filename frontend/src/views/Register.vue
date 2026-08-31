@@ -243,7 +243,7 @@ const register=async()=>{
     loading.value=true
 
     try{
-        const response=await axios.post('https://bookstore-fullstack-6vy8.onrender.com/api/auth/register',{
+        const response=await axios.post('http://localhost:5178/api/auth/register',{
             name:name.value,
             email:email.value,
             password:password1.value

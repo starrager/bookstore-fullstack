@@ -106,7 +106,7 @@ const fetchOrders=async()=>{
             router.push('/login')
             return
         }
-        const response=await api.get('/api/orders')
+        const response=await api.get('/orders')
         orders.value=response.data
     }catch(error){console.error(error)}
     finally{loading.value=false}

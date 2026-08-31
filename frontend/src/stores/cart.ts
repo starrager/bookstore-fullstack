@@ -22,7 +22,7 @@ export const useCartStore=defineStore('cart',()=>{
     const getCart=async()=>{
         loading.value=true
         try{
-            const response=await api.get('/api/cart')
+            const response=await api.get('/cart')
             items.value=response.data.items||[]
 
         }catch(error){console.error(error)}
@@ -31,7 +31,7 @@ export const useCartStore=defineStore('cart',()=>{
 
     const addToCart=async(bookId:Number,quantity=1)=>{
         try{
-            await api.post('/api/cart/add',{bookId,quantity})
+            await api.post('/cart/add',{bookId,quantity})
             await getCart()
         }catch(error){
             console.error(error)
@@ -41,7 +41,7 @@ export const useCartStore=defineStore('cart',()=>{
 
     const removeFromCart=async(itemId:Number)=>{
         try{
-            await api.delete(`/api/cart/item/${itemId}`)
+            await api.delete(`/cart/item/${itemId}`)
             await getCart()
 
         }catch(error){
@@ -52,7 +52,7 @@ export const useCartStore=defineStore('cart',()=>{
 
     const clearCart=async()=>{
         try{
-            await api.delete('/api/cart/clear')
+            await api.delete('/cart/clear')
             await getCart()
 
         }catch(error){

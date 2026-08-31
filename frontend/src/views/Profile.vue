@@ -86,7 +86,7 @@ const passwordForm=ref({
 const fetchProfile=async()=>{
     loading.value=true
     try{
-        const response=await api.get('/api/users/me')
+        const response=await api.get('/users/me')
         form.value={
             name:response.data.name||'',
             email:response.data.email||'',
@@ -102,7 +102,7 @@ const fetchProfile=async()=>{
 
 const updateProfile=async()=>{
     try{
-        await api.put('/api/users/me', {
+        await api.put('/users/me', {
             name: form.value.name,
             email: form.value.email
         })
@@ -127,7 +127,7 @@ const updatePassword=async()=>{
             toast.warning('Please fill in all fields')
             return
         }
-        await api.put('/api/users/me/password',{
+        await api.put('/users/me/password',{
             currentPassword:passwordForm.value.currentPassword,
             newPassword:passwordForm.value.newPassword
         })

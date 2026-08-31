@@ -202,7 +202,7 @@ const closeModal = () => {
 
 const fetchReviews = async (bookId) => {
     try {
-        const response = await api.get(`/api/reviews/book/${bookId}`)
+        const response = await api.get(`/reviews/book/${bookId}`)
         reviews.value = response.data.reviews || []
     } catch (error) {
         console.error(error)
@@ -211,7 +211,7 @@ const fetchReviews = async (bookId) => {
 
 const submitReview = async () => {
     try {
-        await api.post('/api/reviews', {
+        await api.post('/reviews', {
             bookId: selectedBook.value.id,
             rating: newReview.value.rating,
             text: newReview.value.text
@@ -236,7 +236,7 @@ const handleImageError = (event, book) => {
 
 const fetchCategories = async () => {
     try {
-        const response = await api.get('/api/categories')
+        const response = await api.get('/categories')
         categories.value = response.data
     } catch (error) {
         console.error(error)
@@ -246,7 +246,7 @@ const fetchCategories = async () => {
 const fetchBooks = async () => {
     loading.value = true
     try {
-        const response = await api.get('api/books', {
+        const response = await api.get('/books', {
             params: {
                 search: search.value || undefined,
                 sort: sort.value || undefined,

@@ -9,7 +9,7 @@ export const useFavoritesStore=defineStore('favorites',()=>{
     const getFavorites=async()=>{
         loading.value=true
         try{
-            const response=await api.get('/api/favorites')
+            const response=await api.get('/favorites')
             books.value=response.data||[]
 
         }catch(error){
@@ -20,7 +20,7 @@ export const useFavoritesStore=defineStore('favorites',()=>{
 
     const addFavorite=async(bookId:Number)=>{
         try{
-            await api.post('/api/favorites',{bookId})
+            await api.post('/favorites',{bookId})
             await getFavorites()
         }catch(error){
             console.error(error)
@@ -30,7 +30,7 @@ export const useFavoritesStore=defineStore('favorites',()=>{
 
     const removeFavorite=async(bookId:Number)=>{
         try{
-            await api.delete(`/api/favorites/${bookId}`)
+            await api.delete(`/favorites/${bookId}`)
             await getFavorites()
         }catch(error){
             console.error(error)
@@ -40,7 +40,7 @@ export const useFavoritesStore=defineStore('favorites',()=>{
 
     const isFavorite=async(bookId:Number)=>{
         try{
-            const response=await api.get(`/api/favorites/check/${bookId}`)
+            const response=await api.get(`/favorites/check/${bookId}`)
             return response.data.isFavorite
         }catch(error){
             console.error(error)

@@ -269,7 +269,7 @@ const fetchOrder=async()=>{
     loading.value=true
     try{
         const id=route.params.id
-        const response=await api.get(`/api/orders/${id}`)
+        const response=await api.get(`/orders/${id}`)
         order.value=response.data
     }catch(error){
         console.error(error)

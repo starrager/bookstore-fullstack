@@ -9,7 +9,6 @@
         </div>
 
         <div v-else class="checkout-grid">
-            <!-- Товары -->
             <div class="checkout-items">
                 <h2>Товары</h2>
                 <div v-for="item in cartStore.items" :key="item.id" class="checkout-item">
@@ -35,7 +34,6 @@
                 </div>
             </div>
 
-            <!-- Форма -->
             <div class="checkout-form">
                 <h2>Адрес доставки</h2>
                 <form @submit.prevent="placeOrder">
@@ -93,7 +91,7 @@ const placeOrder = async () => {
             return
         }
 
-        const response = await api.post('/api/orders', {
+        const response = await api.post('/orders', {
             address: address.value,
             phone: phone.value
         })
