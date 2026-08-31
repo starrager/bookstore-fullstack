@@ -89,7 +89,7 @@
 ### 🛠️ Admin Panel
 - **Book management** — CRUD operations
 - **Admin stats** — users, books, orders, revenue, top books
-
+/admin/books
 ---
 
 ## 🧱 Architecture
