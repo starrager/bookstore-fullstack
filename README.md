@@ -3,7 +3,7 @@
 > Fullstack-интернет-магазин книг с авторизацией, корзиной, заказами, отзывами, избранным и административной панелью.
 
 <p align="center">
-  <a href="https://starrager-books.surge.sh">
+  <a href="https://bookstore-frontend-nine-rose.vercel.app">
     <img src="https://img.shields.io/badge/Live%20Demo-Visit%20App-8B5CF6?style=for-the-badge" alt="Live Demo">
   </a>
   <a href="https://github.com/starrager/bookstore-fullstack">
@@ -26,9 +26,9 @@
 
 ## 🌐 Demo
 
-| **Frontend** | [https://starrager-books.surge.sh](https://starrager-books.surge.sh) |
-|--------------|----------------------------------------------------------------------|
-| **Backend API** | [https://bookstore-fullstack-6vy8.onrender.com](https://bookstore-fullstack-6vy8.onrender.com) |
+| **Frontend** | [https://bookstore-frontend-nine-rose.vercel.app](https://bookstore-frontend-nine-rose.vercel.app) |
+|--------------|-----------------------------------------------------------------------------------------------------|
+| **Backend API** | [https://bookstore-fullstack-2-rksf.onrender.com](https://bookstore-fullstack-2-rksf.onrender.com) |
 | **Repository** | [https://github.com/starrager/bookstore-fullstack](https://github.com/starrager/bookstore-fullstack) |
 
 ---
@@ -40,7 +40,7 @@
 - JWT-based authentication
 - Password hashing with bcrypt
 - Protected routes
-- Role-based access control
+- Role-based access control (User/Admin)
 - Profile management
 - Password changing
 
@@ -57,7 +57,7 @@
 - Add/remove books
 - Change quantity
 - Automatic total calculation
-- Cart persistence
+- Cart persistence (Pinia store)
 - Clear cart
 
 ### 📦 Orders
@@ -94,51 +94,65 @@
 ## 🧱 Architecture
 
 ### Backend
-
-```plaintext
 backend/
 ├── src/
-│   ├── controllers/     # Request handlers
-│   ├── routes/          # API routes
-│   ├── middleware/      # Auth, validation, logging
-│   ├── validators/      # Zod validation schemas
-│   ├── scripts/         # Utils & seeds
-│   ├── server.ts        # Entry point
-│   └── logger.ts        # Winston logging
+│ ├── controllers/ # Request handlers
+│ ├── routes/ # API routes
+│ ├── middleware/ # Auth, validation, logging
+│ ├── validators/ # Zod validation schemas
+│ ├── scripts/ # Utils & seeds
+│ ├── server.ts # Entry point
+│ └── logger.ts # Winston logging
 ├── prisma/
-│   └── schema.prisma    # Database models
-├── logs/                # App logs
+│ └── schema.prisma # Database models
+├── logs/ # App logs
 └── package.json
-Frontend
-plaintext
+
+text
+
+### Frontend
 frontend/
 ├── src/
-│   ├── components/      # Reusable components
-│   ├── views/           # Pages
-│   ├── stores/          # Pinia stores
-│   ├── api/             # API client
-│   ├── router/          # Vue Router
-│   ├── styles/          # Global styles
-│   ├── App.vue
-│   └── main.js
+│ ├── components/ # Reusable components
+│ ├── views/ # Pages
+│ ├── stores/ # Pinia stores
+│ ├── api/ # API client
+│ ├── router/ # Vue Router
+│ ├── styles/ # Global styles
+│ ├── App.vue
+│ └── main.js
 ├── public/
-│   └── covers/          # Book cover images
+│ └── covers/ # Book cover images
 └── package.json
-🗄️ Database Schema
-Table	Fields
-users	id, username, email, password, role
-books	id, title, author, price, stock, description, coverId, categoryId
-categories	id, name
-cart_items	id, cartId, bookId, quantity
-orders	id, userId, total, status, address, phone
-order_items	id, orderId, bookId, quantity, price
-reviews	id, userId, bookId, rating, text
-favorites	id, userId, bookId
-🚀 Local Development
-1. Backend
-bash
+
+text
+
+---
+
+## 🗄️ Database Schema
+
+| Table | Fields |
+|-------|--------|
+| **users** | id, username, email, password, role |
+| **books** | id, title, author, price, stock, description, coverId, categoryId |
+| **categories** | id, name |
+| **cart_items** | id, cartId, bookId, quantity |
+| **orders** | id, userId, total, status, address, phone |
+| **order_items** | id, orderId, bookId, quantity, price |
+| **reviews** | id, userId, bookId, rating, text |
+| **favorites** | id, userId, bookId |
+
+---
+
+## 🚀 Local Development
+
+### 1. Backend
+
+```bash
 cd backend
 npm install
+npx prisma generate
+npx prisma migrate dev --name init
 npm run dev
 Server: http://localhost:5178
 
@@ -169,13 +183,48 @@ Axios	HTTP client
 Bootstrap 5	Styling
 🚀 Deployment
 Service	URL
-Backend	Render → https://bookstore-fullstack-6vy8.onrender.com
-Frontend	Surge → https://starrager-books.surge.sh
-🤝 Author
-starrager
+Backend	Render → https://bookstore-fullstack-2-rksf.onrender.com
+Frontend	Vercel → https://bookstore-frontend-nine-rose.vercel.app
+📝 Environment Variables
+Create .env file in backend/:
 
-https://img.shields.io/badge/GitHub-starrager-181717?style=for-the-badge&logo=github
-https://img.shields.io/badge/Telegram-@starragerofshit-26A5E4?style=for-the-badge&logo=telegram
+text
+DATABASE_URL="file:./dev.db"
+JWT_SECRET=your_secret_key
+PORT=5178
+Create .env.production in frontend/:
+
+text
+VITE_API_URL=https://bookstore-fullstack-2-rksf.onrender.com/api
+👤 Author
+GitHub: starrager
+
+Telegram: @starragerofshit
 
 📄 License
 MIT © 2026 starrager
+
+text
+
+---
+
+## Что изменилось:
+
+| Ссылка | Старая | Новая |
+|--------|--------|-------|
+| Frontend | `starrager-books.surge.sh` | `bookstore-frontend-nine-rose.vercel.app` |
+| Backend | `bookstore-fullstack-6vy8.onrender.com` | `bookstore-fullstack-2-rksf.onrender.com` |
+| Бейджи | Surge | Vercel |
+
+---
+
+## Как обновить README на GitHub:
+
+1. Открой `README.md` в корне проекта
+2. Замени содержимое на новое
+3. Закоммить и запушить:
+
+```bash
+git add README.md
+git commit -m "docs: обновлён README с актуальными ссылками на деплой"
+git push origin main
