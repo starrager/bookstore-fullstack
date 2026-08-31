@@ -31,6 +31,7 @@
 | **Backend API** | [https://bookstore-fullstack-2-rksf.onrender.com](https://bookstore-fullstack-2-rksf.onrender.com) |
 | **Repository** | [https://github.com/starrager/bookstore-fullstack](https://github.com/starrager/bookstore-fullstack) |
 
+Демо доступно по ссылке. Если сайт не открывается — возможно, ваш провайдер блокирует Render. Проект полностью рабочий, локально запускается без проблем.
 ---
 
 ## ✨ Features
