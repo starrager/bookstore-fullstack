@@ -207,24 +207,6 @@ MIT © 2026 starrager
 
 text
 
----
-
-## Что изменилось:
-
-| Ссылка | Старая | Новая |
-|--------|--------|-------|
-| Frontend | `starrager-books.surge.sh` | `bookstore-frontend-nine-rose.vercel.app` |
-| Backend | `bookstore-fullstack-6vy8.onrender.com` | `bookstore-fullstack-2-rksf.onrender.com` |
-| Бейджи | Surge | Vercel |
-
----
-
-## Как обновить README на GitHub:
-
-1. Открой `README.md` в корне проекта
-2. Замени содержимое на новое
-3. Закоммить и запушить:
-
 ```bash
 git add README.md
 git commit -m "docs: обновлён README с актуальными ссылками на деплой"
