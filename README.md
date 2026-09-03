@@ -28,7 +28,7 @@
 
 | **Frontend** | [https://bookstore-frontend-nine-rose.vercel.app](https://bookstore-frontend-nine-rose.vercel.app) |
 |--------------|-----------------------------------------------------------------------------------------------------|
-| **Backend API** | [https://bookstore-fullstack-2-rksf.onrender.com](https://bookstore-fullstack-2-rksf.onrender.com) |
+| **Backend API** | [https://bookstore-fullstack-2-rksf.onrender.com](https://starrager-bookstore.surge.sh) |
 | **Repository** | [https://github.com/starrager/bookstore-fullstack](https://github.com/starrager/bookstore-fullstack) |
 
 Демо доступно по ссылке. Если сайт не открывается — возможно, ваш провайдер блокирует Render. Проект полностью рабочий, локально запускается без проблем.
