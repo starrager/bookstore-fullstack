@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview"
-    },
+      },
     "dependencies": {
         "@erag/vue-toastification": "^1.1.4",
         "axios": "^1.19.0",
