@@ -5,7 +5,7 @@ import logger from './logger'
 import { logRequest } from './middleware/logger.middleware'
 
 const app=express()
-const PORT=process.env.PORT||5178
+const PORT=parseInt(process.env.PORT||'5178',10)
 import authRoutes from './routes/auth.routes'
 import bookRouters from './routes/books.routes'
 import categoriesRoutes from './routes/categories.routes'
@@ -59,8 +59,6 @@ app.get('/',(req:Request,res:Response)=>{
 export {app}
 
 //запуск сервера
-if(process.env.NODE_ENV!=='test'){
-    app.listen(PORT,()=>{
-        console.log(`THE SERVER IS RUNNING ON http://localhost:${PORT}`)
-    })
-}
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`THE SERVER IS RUNNING ON http://0.0.0.0:${PORT}`)
+})
