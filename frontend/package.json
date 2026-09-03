@@ -4,23 +4,24 @@
     "private": true,
     "type": "module",
     "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "preview": "vite preview"
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
     },
     "dependencies": {
-      "@erag/vue-toastification": "^1.1.4",
-      "axios": "^1.19.0",
-      "pinia": "^4.0.2",
-      "vue": "^3.5.40",
-      "vue-router": "^4.6.4"
+        "@erag/vue-toastification": "^1.1.4",
+        "axios": "^1.19.0",
+        "pinia": "^4.0.2",
+        "vue": "^3.5.40",
+        "vue-router": "^4.6.4"
     },
     "devDependencies": {
-      "@vitejs/plugin-vue": "^6.0.8",
-      "typescript": "~6.0.0",
-      "vite": "^8.1.5"
+        "@vitejs/plugin-vue": "^6.0.8",
+        "typescript": "~6.0.0",
+        "vite": "^8.1.5",
+        "vite-plugin-vue-devtools": "^8.2.1"
     },
     "engines": {
-      "node": "^22.18.0 || >=24.12.0"
+        "node": "^22.18.0 || >=24.12.0"
     }
-  }
+}
