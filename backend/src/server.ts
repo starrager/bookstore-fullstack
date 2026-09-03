@@ -53,8 +53,8 @@ app.use((err:any,req:Request,res:Response,next:NextFunction)=>{
 })
 
 //get запросы
-app.get('/',(req:Request,res:Response)=>{
-    
+app.get('/', (req, res) => {
+    res.send('Server is running')
 })
 
 export {app}
