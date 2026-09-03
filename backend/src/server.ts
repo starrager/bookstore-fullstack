@@ -18,11 +18,13 @@ import adminRoutes from './routes/admin.routes'
 
 app.use(cors({
     origin: [
-        'https://bookstore-frontend-nine-rose.vercel.app',
-        'https://bookstore-frontend-cvsbahzul-kings17.vercel.app',
-        'http://localhost:5173'
+        'http://localhost:5173',
+        'https://starrager-bookstore.surge.sh',
+        'https://bookstore-fullstack-2-rksf.onrender.com'
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }))
 app.use(express.json())
 app.use(logRequest)
