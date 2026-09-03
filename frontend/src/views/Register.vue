@@ -160,6 +160,7 @@ import {useToast} from '@erag/vue-toastification'
 const toast=useToast()
 const router=useRouter()
 import { useAuthStore } from '@/stores/auth'
+import api from '../api/api'
 
 const authStore=useAuthStore()
 const name=ref('')
@@ -243,7 +244,7 @@ const register=async()=>{
     loading.value=true
 
     try{
-        const response=await axios.post( `${import.meta.env.VITE_API_URL}/api/auth/register`,{
+        const response=await api.post('/auth/register',{
             name:name.value,
             email:email.value,
             password:password1.value
